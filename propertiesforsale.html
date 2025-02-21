@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seattle Housing Market Analysis</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #title { background-color: #222; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; font-weight: bold; }
+    #navbar { background-color: #333; color: white; display: flex; }
+    #navbar a { padding: 1rem; cursor: pointer; flex: 1; text-align: center; text-decoration: none; color: white; }
+    #navbar a.active { background-color: #007bff; }
+    #map { width: 80%; height: 100vh; float: right; }
+  </style>
+</head>
+<body>
+  <div id="title">Seattle Housing Market Analysis</div>
+  <div id="navbar">
+    <a id="rentalsTab" href="index.html">Rentals</a>
+    <a id="salesTab" class="active" href="propertiesforsale.html">Properties for Sale</a>
+  </div>
+  <div id="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-122.335167, 47.608013],
+      zoom: 11
+    });
+  </script>
+</body>
+</html>
