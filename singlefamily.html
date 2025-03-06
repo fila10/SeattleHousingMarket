@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Median Single Family Home Prices 2023</title>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+        <style>
+            #link, #map, #title {
+                position: absolute;
+            }
+            #link, #title {
+                background-color: #999999;
+                border-style: solid;
+                border-color: #000000;
+                border-width: 1px;
+                padding: 10px;
+            }
+            #link {
+                bottom: 5px;
+                left: 5px;
+            }
+            #title {
+                text-align: center;
+                width: 100vw;
+                top: 0;
+                left: 0;
+            }
+            #map {
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="title">Median Single Family Home Prices for 2023</div>
+        <div id="link">
+            <a href="apartment.html">Click here for apartments</a>
+        </div>
+        <script>
+            mapboxgl.accessToken = 'pk.eyJ1Ijoic25lZGVjb3JqYWNlIiwiYSI6ImNtNnR1NjhueDA2dDcya24wMnJlcXJqdGQifQ.B_KtFOxpa2pNBufKS2HiQA';
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [-122.335167, 47.62],
+                zoom: 9.8
+            });
+
+            map.on('load', function loadingData() {
+                // add layer
+                map.addSource('singleFamilyData', {
+                    type: 'geojson',
+                    data: 'assets/singlefamily2023.geojson'
+                });
+
+                map.addLayer({
+                    'id': 'noData-layer',
+                    'type': 'fill',
+                    'source': 'singleFamilyData',
+                    paint: {
+                        'fill-color': '#999999',
+                        'fill-outline-color': "#555555"
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
