@@ -7,10 +7,10 @@
         <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
         <style>
-            #link, #map, #title {
+            #link, #map, #title, #selector {
                 position: absolute;
             }
-            #link, #title {
+            #link, #title, #selector {
                 background-color: #999999;
                 border-style: solid;
                 border-color: #000000;
@@ -19,6 +19,10 @@
             }
             #link {
                 bottom: 5px;
+                left: 5px;
+            }
+            #selector {
+                top: 50px;
                 left: 5px;
             }
             #title {
@@ -39,6 +43,13 @@
     <body>
         <div id="map"></div>
         <div id="title">Median Rental Prices for 2024</div>
+        <div id="selector">
+            <h3>Select price display</h3>
+            <input type="radio" name="selector" value="nominative" checked />
+            <label for="nominative">Nominative</label>
+            <input type="radio" name="selector" value="square"/>
+            <label for="square">Per Square Foot</label>
+        </div>
         <div id="link">
             <a href="singlefamily.html">Click here for single family homes</a>
         </div>
@@ -59,14 +70,85 @@
                 });
 
                 map.addLayer({
-                    'id': 'noData-layer',
+                    'id': 'nominative-layer',
                     'type': 'fill',
                     'source': 'apartmentData',
                     paint: {
-                        'fill-color': '#999999',
-                        'fill-outline-color': "#555555"
+                        // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                        'fill-color': [
+                            'step',
+                            ['get', 'PRICE_NOM'],
+                            '#999999',
+                            1,
+                            '#9BC4C1', 
+                            1431,
+                            '#69A8B7',
+                            1797,
+                            '#4B7E98',
+                            2308,
+                            '#2E557A'
+                        ],
+                        'fill-outline-color': "#6E6E6E"
                     }
                 });
+            });
+
+            const square = document.querySelector('input[value="square"]');
+            square.addEventListener("click", () => {
+                if (map.getLayer('nominative-layer')) {
+                    map.removeLayer('nominative-layer');
+                    map.addLayer({
+                        'id': 'square-layer',
+                        'type': 'fill',
+                        'source': 'apartmentData',
+                        paint: {
+                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                            'fill-color': [
+                                'step',
+                                ['get', 'PRICE_SQFT'],
+                                '#999999',
+                                1,
+                                '#9BC4C1', 
+                                2.161,
+                                '#69A8B7',
+                                2.681,
+                                '#4B7E98',
+                                3.181,
+                                '#2E557A'
+                            ],
+                            'fill-outline-color': "#6E6E6E"
+                        }
+                    });
+                }
+            });
+
+            const nominative = document.querySelector('input[value="nominative"]');
+            nominative.addEventListener("click", () => {
+                if (map.getLayer('square-layer')) {
+                    map.removeLayer('square-layer');
+                    map.addLayer({
+                        'id': 'nominative-layer',
+                        'type': 'fill',
+                        'source': 'apartmentData',
+                        paint: {
+                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                            'fill-color': [
+                                'step',
+                                ['get', 'PRICE_NOM'],
+                                '#999999',
+                                1,
+                                '#9BC4C1', 
+                                1431,
+                                '#69A8B7',
+                                1797,
+                                '#4B7E98',
+                                2308,
+                                '#2E557A'
+                            ],
+                            'fill-outline-color': "#6E6E6E"
+                        }
+                    });
+                }
             });
         </script>
     </body>

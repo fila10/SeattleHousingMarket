@@ -7,10 +7,10 @@
         <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
         <style>
-            #link, #map, #title {
+            #link, #map, #title, #selector {
                 position: absolute;
             }
-            #link, #title {
+            #link, #title, #selector {
                 background-color: #999999;
                 border-style: solid;
                 border-color: #000000;
@@ -19,6 +19,10 @@
             }
             #link {
                 bottom: 5px;
+                left: 5px;
+            }
+            #selector {
+                top: 50px;
                 left: 5px;
             }
             #title {
@@ -39,6 +43,13 @@
     <body>
         <div id="map"></div>
         <div id="title">Median Single Family Home Prices for 2023</div>
+        <div id="selector">
+            <h3>Select price display</h3>
+            <input type="radio" name="selector" value="nominative" checked />
+            <label for="nominative">Nominative</label>
+            <input type="radio" name="selector" value="square"/>
+            <label for="square">Per Square Foot</label>
+        </div>
         <div id="link">
             <a href="apartment.html">Click here for apartments</a>
         </div>
@@ -59,14 +70,85 @@
                 });
 
                 map.addLayer({
-                    'id': 'noData-layer',
+                    'id': 'nominative-layer',
                     'type': 'fill',
                     'source': 'singleFamilyData',
                     paint: {
-                        'fill-color': '#999999',
-                        'fill-outline-color': "#555555"
+                        // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                        'fill-color': [
+                            'step',
+                            ['get', 'PRICE_NOM'],
+                            '#999999',
+                            1,
+                            '#9BC4C1',   // stop_output_0
+                            857001,          // stop_input_0
+                            '#69A8B7',
+                            1214001,
+                            '#4B7E98',
+                            1700001,
+                            '#2E557A'
+                        ],
+                        'fill-outline-color': "#6E6E6E"
                     }
                 });
+            });
+
+            const square = document.querySelector('input[value="square"]');
+            square.addEventListener("click", () => {
+                if (map.getLayer('nominative-layer')) {
+                    map.removeLayer('nominative-layer');
+                    map.addLayer({
+                        'id': 'square-layer',
+                        'type': 'fill',
+                        'source': 'singleFamilyData',
+                        paint: {
+                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                            'fill-color': [
+                                'step',
+                                ['get', 'PRICE_SQFT'],
+                                '#999999',
+                                1,
+                                '#9BC4C1', 
+                                389.761,
+                                '#69A8B7',
+                                492.421,
+                                '#4B7E98',
+                                582.461,
+                                '#2E557A'
+                            ],
+                            'fill-outline-color': "#6E6E6E"
+                        }
+                    });
+                }
+            });
+
+            const nominative = document.querySelector('input[value="nominative"]');
+            nominative.addEventListener("click", () => {
+                if (map.getLayer('square-layer')) {
+                    map.removeLayer('square-layer');
+                    map.addLayer({
+                        'id': 'nominative-layer',
+                        'type': 'fill',
+                        'source': 'singleFamilyData',
+                        paint: {
+                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
+                            'fill-color': [
+                                'step',
+                                ['get', 'PRICE_NOM'],
+                                '#999999',
+                                1,
+                                '#9BC4C1', 
+                                857001,
+                                '#69A8B7',
+                                1214001,
+                                '#4B7E98',
+                                1700001,
+                                '#2E557A'
+                            ],
+                            'fill-outline-color': "#6E6E6E"
+                        }
+                    });
+                }
             });
         </script>
     </body>
