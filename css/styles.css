@@ -1,0 +1,36 @@
+#link, #map, #title, #selector {
+    position: absolute;
+}
+
+#link, #title, #selector {
+    background-color: #999999;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    padding: 10px;
+}
+
+#link {
+    bottom: 5px;
+    left: 5px;
+}
+
+#selector {
+    top: 50px;
+    left: 5px;
+}
+
+#title {
+    text-align: center;
+    width: 100vw;
+    top: 0;
+    left: 0;
+}
+
+#map {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}

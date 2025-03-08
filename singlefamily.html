@@ -4,41 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Median Single Family Home Prices 2023</title>
+        <link href="css/styles.css" rel="stylesheet" />
         <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
-        <style>
-            #link, #map, #title, #selector {
-                position: absolute;
-            }
-            #link, #title, #selector {
-                background-color: #999999;
-                border-style: solid;
-                border-color: #000000;
-                border-width: 1px;
-                padding: 10px;
-            }
-            #link {
-                bottom: 5px;
-                left: 5px;
-            }
-            #selector {
-                top: 50px;
-                left: 5px;
-            }
-            #title {
-                text-align: center;
-                width: 100vw;
-                top: 0;
-                left: 0;
-            }
-            #map {
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-            }
-        </style>
     </head>
     <body>
         <div id="map"></div>
@@ -53,102 +21,24 @@
         <div id="link">
             <a href="apartment.html">Click here for apartments</a>
         </div>
-        <script>
-            mapboxgl.accessToken = 'pk.eyJ1Ijoic25lZGVjb3JqYWNlIiwiYSI6ImNtNnR1NjhueDA2dDcya24wMnJlcXJqdGQifQ.B_KtFOxpa2pNBufKS2HiQA';
-            const map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [-122.335167, 47.62],
-                zoom: 9.8
-            });
 
+        <script src="js/script.js"></script>
+        <script>
             map.on('load', function loadingData() {
-                // add layer
                 map.addSource('singleFamilyData', {
                     type: 'geojson',
                     data: 'assets/singlefamily2023.geojson'
                 });
 
-                map.addLayer({
-                    'id': 'nominative-layer',
-                    'type': 'fill',
-                    'source': 'singleFamilyData',
-                    paint: {
-                        // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
-                        'fill-color': [
-                            'step',
-                            ['get', 'PRICE_NOM'],
-                            '#999999',
-                            1,
-                            '#9BC4C1',   // stop_output_0
-                            857001,          // stop_input_0
-                            '#69A8B7',
-                            1214001,
-                            '#4B7E98',
-                            1700001,
-                            '#2E557A'
-                        ],
-                        'fill-outline-color': "#6E6E6E"
-                    }
-                });
+                addNewLayer('nominative-layer', 'singleFamilyData', 'PRICE_NOM', 857001, 1214001, 1700001);
             });
 
-            const square = document.querySelector('input[value="square"]');
-            square.addEventListener("click", () => {
-                if (map.getLayer('nominative-layer')) {
-                    map.removeLayer('nominative-layer');
-                    map.addLayer({
-                        'id': 'square-layer',
-                        'type': 'fill',
-                        'source': 'singleFamilyData',
-                        paint: {
-                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
-                            'fill-color': [
-                                'step',
-                                ['get', 'PRICE_SQFT'],
-                                '#999999',
-                                1,
-                                '#9BC4C1', 
-                                389.761,
-                                '#69A8B7',
-                                492.421,
-                                '#4B7E98',
-                                582.461,
-                                '#2E557A'
-                            ],
-                            'fill-outline-color': "#6E6E6E"
-                        }
-                    });
-                }
+            square.addEventListener("click", function () {
+                swapLayer('nominative-layer', 'square-layer', 'singleFamilyData', 'PRICE_SQFT', 389.761, 492.421, 582.461);
             });
-
-            const nominative = document.querySelector('input[value="nominative"]');
-            nominative.addEventListener("click", () => {
-                if (map.getLayer('square-layer')) {
-                    map.removeLayer('square-layer');
-                    map.addLayer({
-                        'id': 'nominative-layer',
-                        'type': 'fill',
-                        'source': 'singleFamilyData',
-                        paint: {
-                            // These fill colors were created using the "Natural Breaks (Jenks) Method in ArcGIS Pro"
-                            'fill-color': [
-                                'step',
-                                ['get', 'PRICE_NOM'],
-                                '#999999',
-                                1,
-                                '#9BC4C1', 
-                                857001,
-                                '#69A8B7',
-                                1214001,
-                                '#4B7E98',
-                                1700001,
-                                '#2E557A'
-                            ],
-                            'fill-outline-color': "#6E6E6E"
-                        }
-                    });
-                }
+            
+            nominative.addEventListener("click", function () {
+                swapLayer('square-layer', 'nominative-layer', 'singleFamilyData', 'PRICE_NOM', 857001, 1214001, 1700001);
             });
         </script>
     </body>
