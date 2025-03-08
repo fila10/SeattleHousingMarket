@@ -16,10 +16,10 @@
   </style>
 </head>
 <body>
-  <div id="title">Seattle Housing Market Analysis</div>
+  <div id="title">Seattle Housing Market</div>
   <div id="navbar">
-    <a id="rentalsTab" href="index.html">Rentals</a>
-    <a id="salesTab" class="active" href="propertiesforsale.html">Properties for Sale</a>
+    <a id="rentalsTab" href="index.html"> Median Rentals</a>
+    <a id="salesTab" class="active" href="propertiesforsale.html"> Median Properties for Sale</a>
   </div>
   <div id="map"></div>
 
@@ -31,6 +31,101 @@
       center: [-122.335167, 47.608013],
       zoom: 11
     });
-  </script>
+    map.on('load', () => {
+  map.addSource('housingData', {
+    type: 'geojson',
+    data: 'assets/seattle_median_price.geojson'
+  });
+
+  // Step 1: Convert Home Prices to Weights
+  map.addLayer({
+    id: 'housing-heatmap',
+    type: 'heatmap',
+    source: 'housingData',
+    paint: {
+      // Weight based on median home value (higher price = stronger heat)
+      'heatmap-weight': [
+        'interpolate', ['linear'], ['get', 'median_home_value'],
+        394100, 0.2,    // Cheapest homes → Low weight
+        800000, 0.4,    // Mid-range homes
+        1200000, 0.6,   // Expensive homes
+        2000000, 1      // Most expensive homes → High weight
+      ],
+      // Adjust intensity dynamically based on zoom
+      'heatmap-intensity': [
+        'interpolate', ['linear'], ['zoom'],
+        10, 1, 15, 5
+      ],
+      // Color gradient based on weight (Green = low, Yellow = mid, Red = high)
+      'heatmap-color': [
+        'interpolate', ['linear'], ['heatmap-density'],
+        0, 'rgba(255, 0, 0, 0)',   /* Green for low home values */
+        0.2, 'rgb(173,216,230)',/* Light blue for mid-range values */
+        0.4, 'rgb(173,216,230)',  /* Light for mid-range prices */
+        0.6, 'rgb(255,255,0)',  /* Yellow for expensive homes */
+        1, 'rgb(255,0,0)'       /* Red for the most expensive homes */
+      ],
+
+
+      // Adjust heatmap radius based on zoom
+      'heatmap-radius': [
+        'interpolate', ['linear'], ['zoom'],
+        10, 25,  /* Larger radius at low zoom */
+        15, 50   /* Bigger circles when zoomed in */
+      ],
+      // Reduce opacity at high zoom levels for better visibility
+      'heatmap-opacity': [
+        'interpolate', ['linear'], ['zoom'],
+        10, 0.9,  /* More visible when zoomed out */
+        15, 0.3   /* More transparent when zoomed in */
+      ]
+    }
+  });
+
+  // Step 2: Add a Circle Layer for Exact Home Price Points
+  map.addLayer({
+    id: 'housing-points',
+    type: 'circle',
+    source: 'housingData',
+    minzoom: 12,
+    paint: {
+      'circle-radius': [
+        'interpolate', ['linear'], ['zoom'],
+        12, 6,
+        16, 14
+      ],
+      'circle-color': [
+        'interpolate', ['linear'], ['get', 'median_home_value'],
+        394100, 'blue',
+        800000, 'blue',
+        1200000, 'yellow',
+        2000000, 'red'
+      ],
+      'circle-opacity': 0.9,
+      'circle-stroke-width': 1,
+      'circle-stroke-color': 'white'
+    }
+  });
+
+  // Step 3: Add Clickable Popups for Median Home Prices
+  map.on('click', 'housing-points', (e) => {
+    const price = e.features[0].properties.median_home_value;
+    new mapboxgl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(`<h3>Median Home Price: $${price.toLocaleString()}</h3>`)
+      .addTo(map);
+  });
+
+  map.on('mouseenter', 'housing-points', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'housing-points', () => {
+    map.getCanvas().style.cursor = '';
+  });
+
+});
+
+</script>
+
 </body>
 </html>
