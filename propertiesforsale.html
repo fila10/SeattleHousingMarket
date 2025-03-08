@@ -34,7 +34,7 @@
     map.on('load', () => {
   map.addSource('housingData', {
     type: 'geojson',
-    data: 'assets/seattle_median_price.geojson'
+    data: 'assets/seattle_median_price_cleaned.geojson'
   });
 
   // Step 1: Convert Home Prices to Weights
@@ -43,7 +43,7 @@
     type: 'heatmap',
     source: 'housingData',
     paint: {
-      // Weight based on median home value (higher price = stronger heat)
+      // 🔥 Make home value influence weight (intensity)
       'heatmap-weight': [
         'interpolate', ['linear'], ['get', 'median_home_value'],
         394100, 0.2,    // Cheapest homes → Low weight
@@ -51,36 +51,25 @@
         1200000, 0.6,   // Expensive homes
         2000000, 1      // Most expensive homes → High weight
       ],
-      // Adjust intensity dynamically based on zoom
+      // 🔥 Keep heatmap-intensity balanced
       'heatmap-intensity': [
         'interpolate', ['linear'], ['zoom'],
-        10, 1, 15, 5
+        10, 1, 15, 3
       ],
-      // Color gradient based on weight (Green = low, Yellow = mid, Red = high)
+      // ✅ Heatmap color is based on density, but weight is now tied to home value
       'heatmap-color': [
         'interpolate', ['linear'], ['heatmap-density'],
-        0, 'rgba(255, 0, 0, 0)',   /* Green for low home values */
-        0.2, 'rgb(173,216,230)',/* Light blue for mid-range values */
-        0.4, 'rgb(173,216,230)',  /* Light for mid-range prices */
-        0.6, 'rgb(255,255,0)',  /* Yellow for expensive homes */
-        1, 'rgb(255,0,0)'       /* Red for the most expensive homes */
+        0, 'rgba(0, 255, 0, 0)',   /* Transparent Green for low density */
+        0.2, 'rgb(173,216,230)',   /* Light blue for low-mid density */
+        0.4, 'rgb(173,216,230)',   /* Light blue for mid density */
+        0.6, 'rgb(255,255,0)',     /* Yellow for high density */
+        1, 'rgb(255,0,0)'          /* Red for the highest density */
       ],
-
-
-      // Adjust heatmap radius based on zoom
-      'heatmap-radius': [
-        'interpolate', ['linear'], ['zoom'],
-        10, 25,  /* Larger radius at low zoom */
-        15, 50   /* Bigger circles when zoomed in */
-      ],
-      // Reduce opacity at high zoom levels for better visibility
-      'heatmap-opacity': [
-        'interpolate', ['linear'], ['zoom'],
-        10, 0.9,  /* More visible when zoomed out */
-        15, 0.3   /* More transparent when zoomed in */
-      ]
+      // 🔥 Adjust opacity to improve visibility
+      'heatmap-opacity': 0.8
     }
-  });
+});
+
 
   // Step 2: Add a Circle Layer for Exact Home Price Points
   map.addLayer({
