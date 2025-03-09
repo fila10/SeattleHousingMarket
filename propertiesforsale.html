@@ -12,7 +12,38 @@
     #navbar { background-color: #333; color: white; display: flex; }
     #navbar a { padding: 1rem; cursor: pointer; flex: 1; text-align: center; text-decoration: none; color: white; }
     #navbar a.active { background-color: #007bff; }
-    #map { width: 80%; height: 100vh; float: right; }
+    #map { width: 100%; height: 100vh; float: right; }
+    #legend {
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    line-height: 18px;
+    height: 210px;
+    margin-bottom: 40px;
+    width: 150px;
+    background-color: rgb(14, 14, 13);
+    color: white;
+}
+.legend-key {
+    display: inline-block;
+    border-radius: 20%;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+}
+
+  .map-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: rgba(215, 27, 27, 0.8);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.2);
+    margin-left: 20px;
+    font-family: Arial, sans-serif;
+    overflow: auto;
+    border-radius: 3px;
+}
   </style>
 </head>
 <body>
@@ -22,7 +53,7 @@
     <a id="salesTab" class="active" href="propertiesforsale.html"> Median Properties for Sale</a>
   </div>
   <div id="map"></div>
-
+  <div class='map-overlay' id='legend'></div>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
     const map = new mapboxgl.Map({
@@ -31,88 +62,74 @@
       center: [-122.335167, 47.608013],
       zoom: 10.3
     });
-    map.on('load', () => {
-  map.addSource('housingData', {
+    async function geojsonFetch() {
+let response = await fetch('assets/seattle_median_price_cleaned.geojson');
+let cityData = await response.json();
+const layers = [
+    'Undefined',
+    '0 - 600000',
+    '600000 - 900000',
+    '900000 - 1,200000',
+    'Above 1.2 million'
+];
+const colors = [
+    'rgb(211, 211, 211)',
+    '#08306b',
+    '#6baed6',
+    '#fdae61',
+    '#f03b20'
+];
+const legend = document.getElementById('legend');
+legend.innerHTML = "<b><br><br>Median For Properties</b><br><br >";
+
+layers.forEach((layer, i) => {
+    const color = colors[i];
+    const item = document.createElement('div');
+    const key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    const value = document.createElement('span');
+    value.innerHTML = `${layer}`;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+});
+map.on('load', function loadingData() {
+  map.addSource('cityData', {
     type: 'geojson',
-    data: 'assets/seattle_median_price_cleaned.geojson'
-  });
-
-  // Step 1: Convert Home Prices to Weights
-  map.addLayer({
-    id: 'housing-heatmap',
-    type: 'heatmap',
-    source: 'housingData',
-    paint: {
-      // 🔥 Make home value influence weight (intensity)
-      'heatmap-weight': [
-        'interpolate', ['linear'], ['get', 'median_home_value'],
-        394100, 0.2,    // Cheapest homes → Low weight
-        800000, 0.4,    // Mid-range homes
-        1200000, 0.6,   // Expensive homes
-        2000000, 1      // Most expensive homes → High weight
-      ],
-      // 🔥 Keep heatmap-intensity balanced
-      'heatmap-intensity': [
-        'interpolate', ['linear'], ['zoom'],
-        10, 1, 15, 3
-      ],
-      // ✅ Heatmap color is based on density, but weight is now tied to home value
-      'heatmap-color': [
-        'interpolate', ['linear'], ['heatmap-density'],
-        0, 'rgba(0, 255, 0, 0)',   /* Transparent Green for low density */
-        0.2, 'rgb(173,216,230)',   /* Light blue for low-mid density */
-        0.4, 'rgb(173,216,230)',   /* Light blue for mid density */
-        0.6, 'rgb(255,255,0)',     /* Yellow for high density */
-        1, 'rgb(255,0,0)'          /* Red for the highest density */
-      ],
-      // 🔥 Adjust opacity to improve visibility
-      'heatmap-opacity': 0.8
-    }
+    data: cityData
 });
-
-
-  // Step 2: Add a Circle Layer for Exact Home Price Points
-  map.addLayer({
-    id: 'housing-points',
-    type: 'circle',
-    source: 'housingData',
-    minzoom: 12,
-    paint: {
-      'circle-radius': [
-        'interpolate', ['linear'], ['zoom'],
-        12, 6,
-        16, 14
-      ],
-      'circle-color': [
-        'interpolate', ['linear'], ['get', 'median_home_value'],
-        394100, 'blue',
-        800000, 'blue',
-        1200000, 'yellow',
-        2000000, 'red'
-      ],
-      'circle-opacity': 0.9,
-      'circle-stroke-width': 1,
-      'circle-stroke-color': 'white'
+cityData.features.forEach(feature => {
+    if (typeof feature.properties.median_home_value === 'string') {
+      feature.properties.median_home_value = parseFloat(feature.properties.median_home_value);
     }
   });
 
-  // Step 3: Add Clickable Popups for Median Home Prices
-  map.on('click', 'housing-points', (e) => {
-    const price = e.features[0].properties.median_home_value;
-    new mapboxgl.Popup()
-      .setLngLat(e.lngLat)
-      .setHTML(`<h3>Median Home Price: $${price.toLocaleString()}</h3>`)
-      .addTo(map);
-  });
+  map.addLayer({
+    'id': 'cityData-layer',
+    'type': 'fill',
+    'source': 'cityData',
+    'paint': {
+      'fill-color': [
+    'step',
+    ['coalesce', ['get', 'median_home_value'], 0],
+      'light grey' , 1,
+      '#08306b', 500000,  // Dark Blue for Low value (under $600,000)
+      '#6baed6', 900000,  // Light Blue for Mid-Low value ($600,000 - $900,000)
+      '#fdae61', 1200000, // Light Orange for Mid-High value ($900,000 - $1,200,000)
+      '#f03b20'           // Bright Red for High value (above $1,200,000)
+    ],
 
-  map.on('mouseenter', 'housing-points', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'housing-points', () => {
-    map.getCanvas().style.cursor = '';
-  });
+    'fill-outline-color': '#BBBBBB',
+    'fill-opacity': .85
+    }  });});
 
-});
+
+}
+geojsonFetch();
+
+
 
 </script>
 
