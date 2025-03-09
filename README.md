@@ -8,3 +8,11 @@ The target audience includes:
 - City Planners and Policymakers looking to understand housing affordability and distribution.
 - Renters and Home Buyers: seeking insights into price trends in different areas of Seattle.
 - Real Estate Analysts and Investors evaluating neighborhood-level market trends.
+
+## Application
+
+Our application seeks to use effective visualization for our audience to use and see potential areas where they may be interested in investing, buying or researching areas.
+
+A few items or our application includes:
+ - Single Family Households Median Price Choropleth map: Showing maps to display ares with total home price and per square foot price, with the median total price being between $857k and $1.7 Million and the square foot price being between $389.76 to $582.46
+ - Median Prices for Buyers and Rentals: Displays map where it displays 2024 prices for rental homes and properties. User can switch with a tab between rentals and properties based on their preference. Shows any price within the Seattle area.
