@@ -31,9 +31,15 @@
     <!-- Sidebar for Neighborhood List -->
    <!-- Sidebar for Neighborhood List -->
     <div id="sidebar">
-        <h3>Rent Prices in Seattle - 2024</h3>
+        <div id="mapToggle">
+            <a href="interactive_rent.html" class="map-button">Apartments</a>
+            <a href="interactive_sfh.html" class="map-button active">Single-Family</a>
+        </div>
+        
 
-        <p>This interactive map displays rent statistics for <strong>APARTMENTS</strong> by Census Tract in the Greater Seattle area</p>
+        <h3>Home Ownership (2023)</h3>
+
+        <p>This interactive map displays ownership statistics for <strong>SINGLE FAMILY HOMES</strong> by Census Tract in the Greater Seattle area</p>
         <p><strong>Click on a Census Tract for information!</strong></p>
         <h4>Neighborhoods</h4>
         <button id="resetView">Reset Zoom - The Greater Seattle</button> <!-- ✅ Reset View Button -->
@@ -45,16 +51,13 @@
 
     
 
-    
-
-
     <!-- Map Container -->
     <div id="map"></div>
 
     <!-- Dropdown Menu Always Visible -->
     <div id="menu-dropdown">
         <a href="home.html">Home</a>
-        <a href="singlefamily.html">Single Family Home</a>
+        <a href="singlefamily.html">Heat Map</a>
         <a href="propertiesforsale.html">Filas Map</a>
     </div>
 
@@ -64,7 +67,7 @@
     
 
     <!-- Load External JavaScript -->
-    <script src="js/app.js"></script>
+    <script src="js/sfh.js"></script>
 </body>
 </html>
 

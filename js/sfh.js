@@ -100,7 +100,7 @@ function getNeighborhoodColor(name) {
 async function loadTracts() {
     try {
         console.log("🔍 Fetching GeoJSON...");
-        const response = await fetch('assets/apartment2024_Matt.geojson');
+        const response = await fetch('assets/singlefamily2023.geojson');
         const geojsonData = await response.json();
 
         console.log("✅ GeoJSON Loaded:", geojsonData);
