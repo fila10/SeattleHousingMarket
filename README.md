@@ -21,9 +21,13 @@ A few items or our application includes:
 ## Results from this Application
 
 Census Tract with the Lowest Median Price:
+
 Census Tract with the highest Median Price:
+
 Census Tract with the lowest price per Sq. Ft:
+
 Census tract with the highest price per Sq. Ft:
+
 
 Areas of interest:
 
