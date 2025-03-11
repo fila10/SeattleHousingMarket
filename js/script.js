@@ -51,7 +51,7 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
             "$" + new Intl.NumberFormat('en-US').format(num2 + 0.009) + " to $" + new Intl.NumberFormat('en-US').format(num3 - 0.001),
             "> $" + new Intl.NumberFormat('en-US').format(num3 - 0.001)
         ];
-        title = "per square foot";
+        title = "per sq ft";
     } else {
         title = "nominative";
         layers  = [
@@ -64,7 +64,7 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
     }
 
     const legend = document.getElementById('legend');
-    legend.innerHTML = "<b>Price </b>(" + title + ")<br>";
+    legend.innerHTML = "<b>Median Price </b>(" + title + ")<br>";
 
     layers.forEach((layer, i) => {
         const color = colors[i];
