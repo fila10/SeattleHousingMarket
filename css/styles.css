@@ -151,3 +151,43 @@ body {
 #apartment-link a:hover {
     text-decoration: underline;
 }
+
+/* ✅ Sidebar Button Container (Side by Side, Touching) */
+#mapToggle {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* ✅ Larger Sidebar Buttons (Touching Each Other) */
+.map-button {
+    flex: 1; /* Makes buttons equal width */
+    text-decoration: none;
+    background: grey;
+    color: white;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: none; /* No borders */
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+/* ✅ Remove Rounded Edges */
+.map-button:first-child {
+    border-right: 1px solid white; /* Slight separator */
+}
+
+/* ✅ Active Button */
+.map-button.active {
+    background: #005fa3;
+    transform: scale(1.02);
+}
+
+/* ✅ Hover & Click Effects */
+.map-button:hover {
+    background: #005fa3;
+}
+.map-button:active {
+    transform: scale(0.98);
+}
