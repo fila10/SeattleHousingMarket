@@ -1,36 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seattle Housing Market Analysis</title>
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; }
-    #title { background-color: #222; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; font-weight: bold; }
-    #navbar { background-color: #333; color: white; display: flex; }
-    #navbar a { padding: 1rem; cursor: pointer; flex: 1; text-align: center; text-decoration: none; color: white; }
-    #navbar a.active { background-color: #007bff; }
-    #map { width: 75%; height: 100vh; float: right; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seattle Housing Price Insights</title>
+    <link rel="stylesheet" href="css/home.css">
+
+    <!-- ✅ Standard Favicon -->
+     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+
+    <!-- ✅ Apple Touch Icon (for iOS) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- ✅ ICO Format -->
+    <link rel="shortcut icon" href="images/favicon.ico">
 </head>
 <body>
-  <div id="title">Seattle Housing Market</div>
-  <div id="navbar">
-    <a id="rentalsTab" class="active" href="rentals.html">Median Rentals</a>
-    <a id="salesTab" href="propertiesforsale.html">Median Properties for Sale</a>
-  </div>
-  <div id="map"></div>
+    <header>
+        <h1>Seattle Housing Price Insights</h1>
+    </header>
 
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-122.335167, 47.608013],
-      zoom: 10.5
-    });
-  </script>
+    <section id="project-description">
+        <h2>Project Overview</h2>
+        <p>This project provides an interactive visualization of housing trends and rent prices in Seattle.
+           Explore census tracts, analyze apartment prices, and gain insights into the city's housing market.</p>
+    </section>
+
+    <section id="map-navigation">
+        <div class="map-buttons">
+            <a href="interactive_rent.html" class="map-button">Interactive Map</a>
+            <a href="singlefamily.html" class="map-button">Heat Map</a>
+            <a href="propertiesforsale.html" class="map-button">Median Housing Analysis</a>
+        </div>
+    </section>
+
+
+    <section id="main-image">
+        <img src="images/seattlefp.jpg" alt="Seattle Skyline">
+    </section>
+
+    <section id="about-team">
+        <h1>About the Team</h1>
+        <div class="team-container">
+            <div class="team-member">
+                <h2>Matt Suguitan</h2>
+                <h3>Senior</h3>
+                <p><strong>Major:</strong> Geography with Data Science</p>
+                <p><strong>Minor:</strong> Business Administration</p>
+            </div>
+            <div class="team-member">
+                <h2>Bao Doan</h2>
+                <h3>Senior</h3>
+                <p><strong>Major:</strong> Geography with Data Science</p>
+                <p><strong>Minor:</strong> Informatics and Business Admininstration</p>
+            </div>
+            <div class="team-member">
+                <h2>Fila Mohamed</h2>
+                <h3>Senior</h3>
+                <p><strong>Major:</strong> Geography with Data Science</p>
+            </div>
+            <div class="team-member">
+                <h2>Jace Snedecor</h2>
+                <h3>Senior</h3>
+                <p><strong>Major:</strong> Geography with Data Science</p>
+            </div>
+            <div class="team-member">
+                <h2>Sofia Yano</h2>
+                <h3>Senior</h3>
+                <p><strong>Major:</strong> Geography with Data Science</p>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>&copy;GEOG 328: Final Project Group 3</p>
+    </footer>
 </body>
 </html>

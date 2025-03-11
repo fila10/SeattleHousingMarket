@@ -8,131 +8,219 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
   <style>
     body { margin: 0; font-family: Arial, sans-serif; }
-    #title { background-color: #222; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; font-weight: bold; }
-    #navbar { background-color: #333; color: white; display: flex; }
-    #navbar a { padding: 1rem; cursor: pointer; flex: 1; text-align: center; text-decoration: none; color: white; }
-    #navbar a.active { background-color: #007bff; }
-    #map { width: 100%; height: 100vh; float: right; }
+    #title {
+      background-color: #222;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    #map { width: 100%; height: 100vh; }
+    #toggleButton {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background 0.3s ease-in-out;
+    }
+    #toggleButton:hover { background: rgba(255, 255, 255, 0.2); }
     #legend {
-    padding: 10px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    line-height: 18px;
-    height: 210px;
-    margin-bottom: 40px;
-    width: 150px;
-    background-color: rgb(14, 14, 13,.85);
-    color: white;
-
-}
-.legend-key {
-    display: inline-block;
-    border-radius: 20%;
-    width: 10px;
-    height: 10px;
-    margin-right: 5px;
-}
-
-  .map-overlay {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      width: 170px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 12px;
+      height: 12px;
+      margin-right: 5px;
+    }
+    #menu-dropdown {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    background: rgba(215, 27, 27, 0.8);
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.2);
-    margin-left: 20px;
-    font-family: Arial, sans-serif;
-    overflow: auto;
-    border-radius: 3px;
+    top: 10px;
+    right: 10px;
+    background: rgb(0, 0, 0);
+    border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    padding: 10px 0;
 }
+
+/* ✅ Dropdown Links */
+#menu-dropdown a {
+    display: block;
+    padding: 12px 16px;
+    font-size: 16px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+/* ✅ Hover Effect */
+#menu-dropdown a:hover {
+    background: #0077cc;
+    color: white;
+}
+
   </style>
 </head>
 <body>
-  <div id="title">Seattle Housing Market</div>
-  <div id="navbar">
-    <a id="rentalsTab" href="index.html"> Median Rentals</a>
-    <a id="salesTab" class="active" href="propertiesforsale.html"> Median Properties for Sale</a>
-  </div>
+  <div id="title">Seattles Median Housing Market</div>
+  <button id="toggleButton">Switch to Heatmap</button>
   <div id="map"></div>
+
+  <div id="menu-dropdown">
+    <a href="index.html">Home</a>
+    <a href="singlefamily.html">Heat Map</a>
+    <a href="propertiesforsale.html">Filas Map</a>
+</div>
+
   <div class='map-overlay' id='legend'></div>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
     const map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: [-122.335167, 47.608013],
       zoom: 10.3
     });
     async function geojsonFetch() {
-let response = await fetch('assets/seattle_median_price_cleaned.geojson');
-let cityData = await response.json();
-const layers = [
-    'Undefined',
-    '0 - 600000',
-    '600000 - 900000',
-    '900000 - 1,200000',
-    'Above 1.2 million'
-];
-const colors = [
-    'rgb(211, 211, 211)',
-    '#08306b',
-    '#6baed6',
-    '#fdae61',
-    '#f03b20'
-];
-const legend = document.getElementById('legend');
-legend.innerHTML = "<b><br><br>Median For Properties</b><br><br >";
+      let response = await fetch('assets/seattle_median_price_cleaned.geojson');
+      let cityData = await response.json();
+      map.on('load', function () {
+        map.addSource('cityData', { type: 'geojson', data: cityData });
+        map.addLayer({
+          'id': 'choropleth-layer',
+          'type': 'fill',
+          'source': 'cityData',
+          'paint': {
+            'fill-color': [
+              'step',
+              ['coalesce', ['get', 'median_home_value'], 0],
+              'rgb(211, 211, 211)', 540000,
+              '#08306b', 900000,
+              '#6baed6', 1200000,
+              '#fdae61', 1500000,
+              '#f03b20'
+            ],
+            'fill-outline-color': '#BBBBBB',
+            'fill-opacity': 0.85
+          }
+        });
+        map.addLayer({
+          'id': 'heatmap-layer',
+          'type': 'heatmap',
+          'source': 'cityData',
+          'maxzoom': 15,
+          'paint': {
+            'heatmap-weight': [
+              'interpolate',
+              ['linear'],
+              ['get', 'median_home_value'],
+              540000, 0,
+              2000000, 1
+            ],
+            'heatmap-intensity': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 1,
+              15, 3
+            ],
+            'heatmap-color': [
+              'interpolate',
+              ['linear'],
+              ['heatmap-density'],
+              0, 'rgba(33,102,172,0)',
+              0.2, 'rgb(103,169,207)',
+              0.4, 'rgb(209,229,240)',
+              0.6, 'rgb(253,219,199)',
+              0.8, 'rgb(239,138,98)',
+              1, 'rgb(178,24,43)'
+            ],
+            'heatmap-radius': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 15,
+              15, 25
+            ],
+            'heatmap-opacity': 0.75
+          },
+          'layout': { 'visibility': 'none' }
+        });
+    const labelLayerId = map.getStyle().layers.find(layer => layer.type === 'symbol').id;
+    map.moveLayer('choropleth-layer', labelLayerId); // Move below labels
+    map.moveLayer('heatmap-layer', labelLayerId);    // Move below labels
 
-layers.forEach((layer, i) => {
-    const color = colors[i];
-    const item = document.createElement('div');
-    const key = document.createElement('span');
-    key.className = 'legend-key';
-    key.style.backgroundColor = color;
+    // Function to Update the Legend
+       function updateLegend(isHeatmap) {
+          const legend = document.getElementById('legend');
+          legend.innerHTML = `<b>Legend</b><br><br>`;
 
-    const value = document.createElement('span');
-    value.innerHTML = `${layer}`;
-    item.appendChild(key);
-    item.appendChild(value);
-    legend.appendChild(item);
-});
-map.on('load', function loadingData() {
-  map.addSource('cityData', {
-    type: 'geojson',
-    data: cityData
-});
-cityData.features.forEach(feature => {
-    if (typeof feature.properties.median_home_value === 'string') {
-      feature.properties.median_home_value = parseFloat(feature.properties.median_home_value);
+          if (!isHeatmap) {
+            // Choropleth Legend
+            const layers = ['Undefined','540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
+            const colors = ['#D3D3D3','#08306b', '#6baed6', '#fdae61', '#f03b20'];
+
+            layers.forEach((layer, i) => {
+              const item = document.createElement('div');
+              const key = document.createElement('span');
+              key.className = 'legend-key';
+              key.style.backgroundColor = colors[i];
+
+              const value = document.createElement('span');
+              value.innerHTML = `${layer}`;
+              item.appendChild(key);
+              item.appendChild(value);
+              legend.appendChild(item);
+            });
+
+          } else {
+            // Heatmap Legend
+            const gradient = `<div style="height: 20px; width: 100%; background: linear-gradient(to right, rgb(33,102,172), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));"></div>`;
+            legend.innerHTML += gradient;
+            legend.innerHTML += "<br><small>Lower Value → Higher Value</small>";
+          }
+        }
+
+        // Toggle Button Functionality
+        const toggleButton = document.getElementById('toggleButton');
+        let isHeatmapVisible = false;
+
+        toggleButton.addEventListener('click', () => {
+          isHeatmapVisible = !isHeatmapVisible;
+          map.setLayoutProperty('choropleth-layer', 'visibility', isHeatmapVisible ? 'none' : 'visible');
+          map.setLayoutProperty('heatmap-layer', 'visibility', isHeatmapVisible ? 'visible' : 'none');
+          toggleButton.textContent = isHeatmapVisible ? "Switch to Choropleth Map" : "Switch to Heatmap";
+          updateLegend(isHeatmapVisible);
+        });
+
+        updateLegend(false);
+      });
     }
-  });
 
-  map.addLayer({
-    'id': 'cityData-layer',
-    'type': 'fill',
-    'source': 'cityData',
-    'paint': {
-      'fill-color': [
-    'step',
-    ['coalesce', ['get', 'median_home_value'], 0],
-      'light grey' , 1,
-      '#08306b', 500000,  // Dark Blue for Low value (under $600,000)
-      '#6baed6', 900000,  // Light Blue for Mid-Low value ($600,000 - $900,000)
-      '#fdae61', 1200000, // Light Orange for Mid-High value ($900,000 - $1,200,000)
-      '#f03b20'           // Bright Red for High value (above $1,200,000)
-    ],
-
-    'fill-outline-color': '#BBBBBB',
-    'fill-opacity': .85
-    }  });});
-
-
-}
-geojsonFetch();
-
-
-
-</script>
-
+    geojsonFetch();
+    </script>
 </body>
 </html>

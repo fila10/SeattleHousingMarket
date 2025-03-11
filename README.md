@@ -16,3 +16,24 @@ Our application seeks to use effective visualization for our audience to use and
 A few items or our application includes:
  - Single Family Households Median Price Choropleth map: Showing maps to display ares with total home price and per square foot price, with the median total price being between $857k and $1.7 Million and the square foot price being between $389.76 to $582.46
  - Median Prices for Buyers and Rentals: Displays map where it displays 2024 prices for rental homes and properties. User can switch with a tab between rentals and properties based on their preference. Shows any price within the Seattle area.
+ - Rent Prices via Census Tract Choropleth Map: Displays a map with areas divided into sections of North, Central, South and West Seattle. Has an interactable side bar that allows users to select their desired area see which Tract, Price per Sq. ft, and Median Price per rental on the map. Zooms in to the selected census tract and highlights it before a popup appears to display the information.
+
+## Results from this Application
+
+Census Tract with the Lowest Median Price:
+
+Census Tract with the highest Median Price:
+
+Census Tract with the lowest price per Sq. Ft:
+
+Census tract with the highest price per Sq. Ft:
+
+
+Areas of interest:
+
+Areas of potential development:
+
+
+## Acknowledgements
+
+Throughout our project we did use ChatGPT to help edit and improve the rough drafts of our code. 
