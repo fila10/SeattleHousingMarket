@@ -22,17 +22,21 @@
     </head>
     <body>
         <div id="map"></div>
-        <div class="box" id="title">Median Rental Prices for 2024</div>
-        <div class="box" id="selector">
-            <p><b>Select price display</b></p>
-            <input type="radio" name="selector" value="nominative" checked />
-            <label for="nominative">Nominative</label>
-            <input type="radio" name="selector" value="square"/>
-            <label for="square">Per Square Foot</label>
-            <p><a href="singlefamily.html">Click here for single family homes</a></p>
+        <!-- ✅ Sidebar for Controls -->
+        <div id="sidebar">
+            <div id="selector">
+                <p><b>Select price display</b></p>
+                <input type="radio" name="selector" value="nominative" checked />
+                <label for="nominative">Nominative</label>
+                <input type="radio" name="selector" value="square"/>
+                <label for="square">Per Square Foot</label>
+            </div>
+    
+            <div id="legend"></div>
+    
+            <p id="apartment-link"><a href="singlefamily.html">Click here for Single Family</a></p>
         </div>
-        <div class="box" id="legend"></div>
-
+    
         <script src="js/script.js"></script>
         <script>
             map.on('load', function loadingData() {
