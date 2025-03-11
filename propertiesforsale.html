@@ -135,15 +135,19 @@
           },
           'layout': { 'visibility': 'none' }
         });
-       // Function to Update the Legend
+    const labelLayerId = map.getStyle().layers.find(layer => layer.type === 'symbol').id;
+    map.moveLayer('choropleth-layer', labelLayerId); // Move below labels
+    map.moveLayer('heatmap-layer', labelLayerId);    // Move below labels
+
+    // Function to Update the Legend
        function updateLegend(isHeatmap) {
           const legend = document.getElementById('legend');
           legend.innerHTML = `<b>Legend</b><br><br>`;
 
           if (!isHeatmap) {
             // Choropleth Legend
-            const layers = ['540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
-            const colors = ['#08306b', '#6baed6', '#fdae61', '#f03b20'];
+            const layers = ['Undefined','540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
+            const colors = ['#D3D3D3','#08306b', '#6baed6', '#fdae61', '#f03b20'];
 
             layers.forEach((layer, i) => {
               const item = document.createElement('div');
