@@ -35,10 +35,70 @@
     left: 5px;
 }
 
+/* ✅ Selector Container */
 #selector {
-    top: 50px;
-    left: 5px;
+    display: flex;
+    justify-content: center; /* Center-align buttons */
+    gap: 10px; /* Add spacing between buttons */
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* ✅ Hide the Default Radio Buttons */
+#selector input[type="radio"] {
+    display: none; /* Hide the original radio buttons */
+}
+
+/* ✅ Selector Container */
+#selector {
+    display: flex;
+    justify-content: center;
+    background: white;
+    padding: 0; /* Remove padding to make buttons flush */
+    border-radius: 0;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* ✅ Hide Default Radio Buttons */
+#selector input[type="radio"] {
+    display: none; /* Hide the radio buttons */
+}
+
+/* ✅ Label Styled as Button */
+#selector label {
+    flex: 1; /* Make buttons equal width */
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    background: grey;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+    border-radius: 0; /* ✅ Remove rounded edges */
+    border-right: 1px solid white; /* Slight separator */
+}
+
+/* ✅ Remove right border for the last button */
+#selector label:last-child {
+    border-right: none;
+}
+
+/* ✅ Hover Effect */
+#selector label:hover {
+    background: #005fa3;
+}
+
+/* ✅ Active (Selected) State */
+#selector input[type="radio"]:checked + label {
+    background: #0077cc;
+    transform: scale(1.02);
+}
+
+
 
 #title {
     text-align: center;
@@ -121,6 +181,7 @@ body {
     flex-direction: column;
     gap: 0px;
     z-index: 1000;
+    align-items: center;
 }
 
 
