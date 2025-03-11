@@ -1,9 +1,14 @@
-mapboxgl.accessToken = 'pk.eyJ1Ijoic25lZGVjb3JqYWNlIiwiYSI6ImNtNnR1NjhueDA2dDcya24wMnJlcXJqdGQifQ.B_KtFOxpa2pNBufKS2HiQA';
+// ✅ Use your Mapbox Access Token
+mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dHN1Z3MiLCJhIjoiY203em45cTM5MG1kZTJscHk1bWJweGp5NiJ9.4iDQS5066jGVPcFcZArztQ';
+
+const SEATTLE_CENTER = [-122.3321, 47.6062];
+const DEFAULT_ZOOM = 10.5;
+
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [-122.335167, 47.62],
-    zoom: 10.5
+    style: 'mapbox://styles/mattsugs/cm83gnyhu000b01ss292i88x5',
+    center: SEATTLE_CENTER,
+    zoom: DEFAULT_ZOOM
 });
 
 const square = document.querySelector('input[value="square"]');
