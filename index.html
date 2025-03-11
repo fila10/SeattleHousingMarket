@@ -1,36 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seattle Housing Market Analysis</title>
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; }
-    #title { background-color: #222; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; font-weight: bold; }
-    #navbar { background-color: #333; color: white; display: flex; }
-    #navbar a { padding: 1rem; cursor: pointer; flex: 1; text-align: center; text-decoration: none; color: white; }
-    #navbar a.active { background-color: #007bff; }
-    #map { width: 75%; height: 100vh; float: right; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborhoods & Census Tracts</title>
+    
+    <!-- Load Mapbox -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
+    
+    <!-- Load External Styles -->
+    <link rel="stylesheet" href="css/styles_matt.css"> 
+
+            <!-- ✅ Standard Favicon -->
+            <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    
+            <!-- ✅ Apple Touch Icon (for iOS) -->
+            <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    
+            <!-- ✅ ICO Format -->
+            <link rel="shortcut icon" href="images/favicon.ico">
+    
+    
 </head>
 <body>
-  <div id="title">Seattle Housing Market</div>
-  <div id="navbar">
-    <a id="rentalsTab" class="active" href="rentals.html">Median Rentals</a>
-    <a id="salesTab" href="propertiesforsale.html">Median Properties for Sale</a>
-  </div>
-  <div id="map"></div>
 
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-122.335167, 47.608013],
-      zoom: 10.5
-    });
-  </script>
+    
+
+    <!-- Sidebar for Neighborhood List -->
+   <!-- Sidebar for Neighborhood List -->
+    <div id="sidebar">
+        <div id="mapToggle">
+            <a href="interactive_rent.html" class="map-button active">Apartments</a>
+            <a href="interactive_sfh.html" class="map-button">Single-Family</a>
+        </div>
+
+        <h3>Rent Prices (2024)</h3>
+
+        <p>This interactive map displays rent statistics for <strong>APARTMENTS</strong> by Census Tract in the Greater Seattle area</p>
+        <p><strong>Click on a Census Tract for information!</strong></p>
+        <h4>Neighborhoods</h4>
+        <button id="resetView">Reset Zoom - The Greater Seattle</button> <!-- ✅ Reset View Button -->
+
+
+        <div id="tractList"></div> <!-- Neighborhoods will be added here -->
+        
+    </div>
+
+    
+
+    
+
+
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Dropdown Menu Always Visible -->
+    <div id="menu-dropdown">
+        <a href="home.html">Home</a>
+        <a href="singlefamily.html">Heat Map</a>
+        <a href="propertiesforsale.html">Filas Map</a>
+    </div>
+
+
+
+
+    
+
+    <!-- Load External JavaScript -->
+    <script src="js/rent.js"></script>
 </body>
 </html>
+
