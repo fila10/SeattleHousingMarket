@@ -261,6 +261,15 @@ map.on('click', () => {
 // ✅ Initialize
 map.on('load', () => { loadTracts(); });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const currentPage = window.location.pathname.split('/').pop(); // Get the current page filename
+    const menuItems = document.querySelectorAll("#menu-dropdown a");
 
+    menuItems.forEach(item => {
+        if (item.getAttribute("href") === currentPage) {
+            item.classList.add("active"); // ✅ Add "active" class for shading
+        }
+    });
+});
 
 

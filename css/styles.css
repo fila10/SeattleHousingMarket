@@ -61,7 +61,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* ✅ Simple Always-Visible Dropdown */
+/* ✅ Dropdown Menu Styling */
 #menu-dropdown {
     position: absolute;
     top: 10px;
@@ -75,7 +75,7 @@ body {
 }
 
 /* ✅ Dropdown Links */
-#menu-dropdown a {
+#menu-dropdown a.menu {
     display: block;
     padding: 12px 16px;
     font-size: 16px;
@@ -85,13 +85,20 @@ body {
 }
 
 /* ✅ Hover Effect */
-#menu-dropdown a:hover {
+#menu-dropdown a.menu:hover {
     background: #0077cc;
     color: white;
 }
 
 /* ✅ Add Spacing Between Items */
-#menu-dropdown a:not(:last-child) {
-    border-bottom: 1px solid #eee; /* 🔥 Subtle Separators */
+#menu-dropdown a.menu:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+/* ✅ Active Menu Item (Shaded Background) */
+#menu-dropdown a.menu.active {
+    background: #0077cc; /* Light blue shading */
+    color: white;
+    font-weight: bold;
 }
 
