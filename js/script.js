@@ -42,30 +42,26 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
         }
     });
 
-    let title; 
-    let form1;
-    let form2;
-    let form3;
-
+    let layers = [];
     if (variable === "PRICE_SQFT") {
+        layers  = [
+            "No Data",
+            "≤ $" + new Intl.NumberFormat('en-US').format(num1 - 0.001),
+            "$" + new Intl.NumberFormat('en-US').format(num1 + 0.009) + " to $" + new Intl.NumberFormat('en-US').format(num2 - 0.001),
+            "$" + new Intl.NumberFormat('en-US').format(num2 + 0.009) + " to $" + new Intl.NumberFormat('en-US').format(num3 - 0.001),
+            "> $" + new Intl.NumberFormat('en-US').format(num3 - 0.001)
+        ];
         title = "per square foot";
-        form1 = new Intl.NumberFormat('en-US').format(num1 - 0.001);
-        form2 = new Intl.NumberFormat('en-US').format(num2 - 0.001);
-        form3 = new Intl.NumberFormat('en-US').format(num3 - 0.001);
     } else {
         title = "nominative";
-        form1 = new Intl.NumberFormat('en-US').format(num1 - 1);
-        form2 = new Intl.NumberFormat('en-US').format(num2 - 1);
-        form3 = new Intl.NumberFormat('en-US').format(num3 - 1);
+        layers  = [
+            "No Data",
+            "≤ $" + new Intl.NumberFormat('en-US').format(num1 - 1),
+            "$" + new Intl.NumberFormat('en-US').format(num1) + " to $" + new Intl.NumberFormat('en-US').format(num2 - 1),
+            "$" + new Intl.NumberFormat('en-US').format(num2) + " to $" + new Intl.NumberFormat('en-US').format(num3 - 1),
+            "> $" + new Intl.NumberFormat('en-US').format(num3 - 1)
+        ];
     }
-
-    const layers = [
-        "No Data",
-        "≤ $" + form1,
-        "$" + form1 + " to $" + form2,
-        "$" + form2 + " to $" + form3,
-        "> $" + form3
-    ];
 
     const legend = document.getElementById('legend');
     legend.innerHTML = "<b>Price </b>(" + title + ")<br>";
