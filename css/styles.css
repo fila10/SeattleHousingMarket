@@ -101,4 +101,53 @@ body {
     color: white;
     font-weight: bold;
 }
+/* ✅ Make Sidebar Full Height & Fixed Width */
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 275px; /* Set the sidebar width */
+    height: 100vh; /* Full height */
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-right: 2px solid #ccc;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+}
 
+/* ✅ Make Sure Map Adjusts */
+#map {
+    position: absolute;
+    top: 0;
+    left: 300px; /* Push the map to the right */
+    right: 0;
+    bottom: 0;
+    width: calc(100% - 300px); /* Map takes up the rest of the space */
+}
+
+/* ✅ Sidebar Sections */
+#selector, #legend, #apartment-link {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Apartment Link Styling */
+#apartment-link {
+    text-align: center;
+    font-size: 14px;
+}
+
+#apartment-link a {
+    text-decoration: none;
+    color: #0077cc;
+    font-weight: bold;
+}
+
+#apartment-link a:hover {
+    text-decoration: underline;
+}

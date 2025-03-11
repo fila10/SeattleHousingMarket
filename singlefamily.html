@@ -22,17 +22,23 @@
     </head>
     <body>
         <div id="map"></div>
-        <div class="box" id="title">Median Single Family Home Prices for 2023</div>
-        <div class="box" id="selector">
-            <p><b>Select price display</b></p>
-            <input type="radio" name="selector" value="nominative" checked />
-            <label for="nominative">Nominative</label>
-            <input type="radio" name="selector" value="square"/>
-            <label for="square">Per Square Foot</label>
-            <p><a href="apartment.html">Click here for apartments</a></p>
-        </div>
-        <div class="box" id="legend"></div>
+        <div id="map"></div>
 
+        <!-- ✅ Sidebar for Controls -->
+        <div id="sidebar">
+            <div id="selector">
+                <p><b>Select price display</b></p>
+                <input type="radio" name="selector" value="nominative" checked />
+                <label for="nominative">Nominative</label>
+                <input type="radio" name="selector" value="square"/>
+                <label for="square">Per Square Foot</label>
+            </div>
+    
+            <div id="legend"></div>
+    
+            <p id="apartment-link"><a href="apartment.html">Click here for apartments</a></p>
+        </div>
+    
         <script src="js/script.js"></script>
         <script>
             map.on('load', function loadingData() {
