@@ -239,15 +239,15 @@ function enableTractClick() {
     });
 }
 
-// ✅ Enable Hover Effect for Census Tracts
+// ✅ Enable Hover Effect for Individual Census Tracts
 function enableTractHover() {
     map.on('mousemove', 'tract-layer', (e) => {
         if (e.features.length > 0) {
-            map.setFilter('tract-hover', ['==', 'CRA_NAME', e.features[0].properties.CRA_NAME]);
+            map.setFilter('tract-hover', ['==', ['get', 'TRACT'], e.features[0].properties.TRACT]);
         }
     });
     map.on('mouseleave', 'tract-layer', () => {
-        map.setFilter('tract-hover', ['==', 'CRA_NAME', '']);
+        map.setFilter('tract-hover', ['==', ['get', 'TRACT'], '']);
     });
 }
 
