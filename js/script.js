@@ -91,3 +91,11 @@ function swapLayer(oldLayer, newLayer, source, variable, num1, num2, num3) {
         addNewLayer(newLayer, source, variable, num1, num2, num3);
     }
 }
+
+// ✅ Reset View Function
+function resetMapView() {
+    map.flyTo({ center: SEATTLE_CENTER, zoom: DEFAULT_ZOOM, essential: true });
+    map.setFilter('tract-selected', ['==', 'CRA_NAME', '']); // Reset selection
+}
+
+document.getElementById("resetView").addEventListener("click", resetMapView);
