@@ -1,217 +1,188 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seattle Housing Market Analysis</title>
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
-    <style>
-      body { margin: 0; font-family: Arial, sans-serif; }
-
-      #title {
-        background-color: #222;
-        color: white;
-        padding: 1rem;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-      }
-
-      #map { width: 100%; height: 100vh; }
-
-      /* Toggle Button */
-   #toggleButton {
-    position: absolute;
-    bottom: 20px;  /* Distance from bottom */
-    left: 50%;  /* Center horizontally */
-    transform: translateX(-50%);  /* Adjust centering */
-    padding: 12px 20px;  /* Bigger padding for a modern look */
-    background: rgba(0, 0, 0, 0.8);  /* Darker transparent black */
-    color: white;
-    border: none;
-    border-radius: 8px;  /* Softer rounded corners */
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 16px;  /* Larger text for better readability */
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);  /* Subtle shadow */
-    transition: background 0.3s ease-in-out;  /* Smooth hover effect */
-  }
-
-  /* Hover effect */
-  #toggleButton:hover {
-    background: rgba(255, 255, 255, 0.2);  /* Slight lightening */
-  }
-
-
-      /* Transparent black legend */
-      #legend {
-        padding: 10px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        line-height: 18px;
-        width: 170px;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        border-radius: 5px;
-        font-size: 14px;
-      }
-
-      .legend-key {
-        display: inline-block;
-        border-radius: 20%;
-        width: 12px;
-        height: 12px;
-        margin-right: 5px;
-      }
-
-    </style>
-
-  </head>
-  <body>
-
-    <div id="title">Seattles Median Housing Market</div>
-    <button id="toggleButton">Switch to Heatmap</button> <!-- Toggle Button -->
-    <div id="map"></div>
-    <div class='map-overlay' id='legend'></div>
-
-    <script>
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
-
-      const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/dark-v11',
-        center: [-122.335167, 47.608013],
-        zoom: 10.3
-      });
-
-      async function geojsonFetch() {
-        let response = await fetch('assets/seattle_median_price_cleaned.geojson');
-        let cityData = await response.json();
-
-        map.on('load', function () {
-          map.addSource('cityData', { type: 'geojson', data: cityData });
-
-          // Choropleth (Fill) Layer
-          map.addLayer({
-            'id': 'choropleth-layer',
-            'type': 'fill',
-            'source': 'cityData',
-            'paint': {
-              'fill-color': [
-                'step',
-                ['coalesce', ['get', 'median_home_value'], 0],
-                'rgb(211, 211, 211)', 540000,
-                '#08306b', 900000,
-                '#6baed6', 1200000,
-                '#fdae61', 1500000,
-                '#f03b20'
-              ],
-              'fill-outline-color': '#BBBBBB',
-              'fill-opacity': 0.85
-            }
-          });
-
-          // Heatmap Layer for Hotspot Analysis
-          map.addLayer({
-            'id': 'heatmap-layer',
-            'type': 'heatmap',
-            'source': 'cityData',
-            'maxzoom': 15,
-            'paint': {
-              'heatmap-weight': [
-                'interpolate',
-                ['linear'],
-                ['get', 'median_home_value'],
-                540000, 0,  // Min value: 540K (Low Intensity)
-                2000000, 1  // Max value: 2M+ (High Intensity)
-              ],
-              'heatmap-intensity': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                10, 1,
-                15, 3
-              ],
-              'heatmap-color': [
-                'interpolate',
-                ['linear'],
-                ['heatmap-density'],
-                0, 'rgba(33,102,172,0)',
-                0.2, 'rgb(103,169,207)',
-                0.4, 'rgb(209,229,240)',
-                0.6, 'rgb(253,219,199)',
-                0.8, 'rgb(239,138,98)',
-                1, 'rgb(178,24,43)'
-              ],
-              'heatmap-radius': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                10, 15,
-                15, 25
-              ],
-              'heatmap-opacity': 0.75
-            },
-            'layout': { 'visibility': 'none' }
-          });
-          // Ensure labels are on top by moving our layers below label layers
-      const labelLayerId = map.getStyle().layers.find(layer => layer.type === 'symbol').id;
-      map.moveLayer('choropleth-layer', labelLayerId); // Move below labels
-      map.moveLayer('heatmap-layer', labelLayerId);    // Move below labels
-
-          // Function to Update the Legend
-          function updateLegend(isHeatmap) {
-            const legend = document.getElementById('legend');
-            legend.innerHTML = `<b>Legend</b><br><br>`;
-
-            if (!isHeatmap) {
-              // Choropleth Legend
-              const layers = ['Undefined','540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
-              const colors = ['#D3D3D3','#08306b', '#6baed6', '#fdae61', '#f03b20'];
-
-              layers.forEach((layer, i) => {
-                const item = document.createElement('div');
-                const key = document.createElement('span');
-                key.className = 'legend-key';
-                key.style.backgroundColor = colors[i];
-
-                const value = document.createElement('span');
-                value.innerHTML = `${layer}`;
-                item.appendChild(key);
-                item.appendChild(value);
-                legend.appendChild(item);
-              });
-
-            } else {
-              // Heatmap Legend
-              const gradient = `<div style="height: 20px; width: 100%; background: linear-gradient(to right, rgb(33,102,172), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));"></div>`;
-              legend.innerHTML += gradient;
-              legend.innerHTML += "<br><small>500,000 → 2 million plus </small>";
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seattle Housing Market Analysis</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #title {
+      background-color: #222;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    #map { width: 100%; height: 100vh; }
+    #toggleButton {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background 0.3s ease-in-out;
+    }
+    #toggleButton:hover { background: rgba(255, 255, 255, 0.2); }
+    #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      width: 170px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 12px;
+      height: 12px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="title">Seattles Median Housing Market</div>
+  <button id="toggleButton">Switch to Heatmap</button>
+  <div id="map"></div>
+  <div class='map-overlay' id='legend'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: [-122.335167, 47.608013],
+      zoom: 10.3
+    });
+    async function geojsonFetch() {
+      let response = await fetch('assets/seattle_median_price_cleaned.geojson');
+      let cityData = await response.json();
+      map.on('load', function () {
+        map.addSource('cityData', { type: 'geojson', data: cityData });
+        map.addLayer({
+          'id': 'choropleth-layer',
+          'type': 'fill',
+          'source': 'cityData',
+          'paint': {
+            'fill-color': [
+              'step',
+              ['coalesce', ['get', 'median_home_value'], 0],
+              'rgb(211, 211, 211)', 540000,
+              '#08306b', 900000,
+              '#6baed6', 1200000,
+              '#fdae61', 1500000,
+              '#f03b20'
+            ],
+            'fill-outline-color': '#BBBBBB',
+            'fill-opacity': 0.85
           }
-
-          // Toggle Button Functionality
-          const toggleButton = document.getElementById('toggleButton');
-          let isHeatmapVisible = false;
-
-          toggleButton.addEventListener('click', () => {
-            isHeatmapVisible = !isHeatmapVisible;
-            map.setLayoutProperty('choropleth-layer', 'visibility', isHeatmapVisible ? 'none' : 'visible');
-            map.setLayoutProperty('heatmap-layer', 'visibility', isHeatmapVisible ? 'visible' : 'none');
-            toggleButton.textContent = isHeatmapVisible ? "Switch to Choropleth Map" : "Switch to Heat Map";
-            updateLegend(isHeatmapVisible);
-          });
-
-          updateLegend(false);
         });
-      }
+        map.addLayer({
+          'id': 'heatmap-layer',
+          'type': 'heatmap',
+          'source': 'cityData',
+          'maxzoom': 15,
+          'paint': {
+            'heatmap-weight': [
+              'interpolate',
+              ['linear'],
+              ['get', 'median_home_value'],
+              540000, 0,
+              2000000, 1
+            ],
+            'heatmap-intensity': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 1,
+              15, 3
+            ],
+            'heatmap-color': [
+              'interpolate',
+              ['linear'],
+              ['heatmap-density'],
+              0, 'rgba(33,102,172,0)',
+              0.2, 'rgb(103,169,207)',
+              0.4, 'rgb(209,229,240)',
+              0.6, 'rgb(253,219,199)',
+              0.8, 'rgb(239,138,98)',
+              1, 'rgb(178,24,43)'
+            ],
+            'heatmap-radius': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 15,
+              15, 25
+            ],
+            'heatmap-opacity': 0.75
+          },
+          'layout': { 'visibility': 'none' }
+        });
+       // Function to Update the Legend
+       function updateLegend(isHeatmap) {
+          const legend = document.getElementById('legend');
+          legend.innerHTML = `<b>Legend</b><br><br>`;
 
-      geojsonFetch();
+          if (!isHeatmap) {
+            // Choropleth Legend
+            const layers = ['540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
+            const colors = ['#08306b', '#6baed6', '#fdae61', '#f03b20'];
+
+            layers.forEach((layer, i) => {
+              const item = document.createElement('div');
+              const key = document.createElement('span');
+              key.className = 'legend-key';
+              key.style.backgroundColor = colors[i];
+
+              const value = document.createElement('span');
+              value.innerHTML = `${layer}`;
+              item.appendChild(key);
+              item.appendChild(value);
+              legend.appendChild(item);
+            });
+
+          } else {
+            // Heatmap Legend
+            const gradient = `<div style="height: 20px; width: 100%; background: linear-gradient(to right, rgb(33,102,172), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));"></div>`;
+            legend.innerHTML += gradient;
+            legend.innerHTML += "<br><small>Lower Value → Higher Value</small>";
+          }
+        }
+
+        // Toggle Button Functionality
+        const toggleButton = document.getElementById('toggleButton');
+        let isHeatmapVisible = false;
+
+        toggleButton.addEventListener('click', () => {
+          isHeatmapVisible = !isHeatmapVisible;
+          map.setLayoutProperty('choropleth-layer', 'visibility', isHeatmapVisible ? 'none' : 'visible');
+          map.setLayoutProperty('heatmap-layer', 'visibility', isHeatmapVisible ? 'visible' : 'none');
+          toggleButton.textContent = isHeatmapVisible ? "Switch to Choropleth Map" : "Switch to Heatmap";
+          updateLegend(isHeatmapVisible);
+        });
+
+        updateLegend(false);
+      });
+    }
+
+    geojsonFetch();
     </script>
-
-  </body>
-  </html>
+</body>
+</html>
