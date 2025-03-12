@@ -2,11 +2,9 @@
 
 ## Project Overview
 
-This project provides an interactive visualization of housing trends and rent prices in Seattle. Explore census tracts, analyze apartment prices, and gain insights into the city's housing market.
+This project provides an interactive visualization of housing trends and rent prices in Seattle. Users can explore census tracts, analyze apartment prices, and gain insights into the city's housing market. The primary focus is on mapping median rent prices and single-family home ownership across different neighborhoods using geospatial techniques like heatmaps and choropleth maps.
 
-This project aims to analyze Seattle’s housing market by visualizing rental and housing price trends through various geospatial techniques. The primary focus will be on mapping rental price averages and house sale averages across different neighborhoods. By leveraging digital geography methods, including heat maps and point cluster visualizations, this project seeks to provide insights into spatial disparities, affordability, and market fluctuations in Seattle’s housing sector.
-
-Rent statistics for apartments by census tract, ownership statistics for single family homes by census tract, median single family home price (nominative & per square foot), median rental prices (nominative & per square foot)
+By leveraging digital geography methods, this project aims to highlight spatial disparities, affordability, and market fluctuations in Seattle’s housing sector.
 
 ## Target Audience
 
@@ -16,14 +14,22 @@ The target audience includes:
 - Renters and Home Buyers: seeking insights into price trends in different areas of Seattle.
 - Real Estate Analysts and Investors evaluating neighborhood-level market trends.
 
-## Application
+## Main Functions
 
-Our application seeks to use effective visualization for our audience to use and see potential areas where they may be interested in investing, buying or researching areas.
+Interactive Map: Displays rent statistics for apartments and ownership statistics for single-family homes by Census Tract in the Greater Seattle area.
+- Users can zoom into neighborhoods categorized by North, Central, West, and South Seattle.
+- Clicking on a census tract reveals detailed information, including the neighborhood name, census tract number, price per square foot, and median price.
 
-A few items or our application includes:
- - Interactive Map: Interactive Map showing rent prices and home ownership prices for areas in Seattle in 2024. Seattle is divided into four sections: North, West, South, and Central Seattle. When clicking a census tract, it displays the tract number, the price per square feet, and the median price depending if the user is looking at apartments or homes.
- - Heat Map: Displays map where it displays 2024 prices for rental homes and properties. User can switch with a tab between rentals and properties based on their preference. Shows any price within the Seattle area.
- - Median Housing Analysis: Displays a map with areas divided into sections of North, Central, South and West Seattle. Has an interactable side bar that allows users to select their desired area see which Tract, Price per Sq. ft, and Median Price per rental on the map. Zooms in to the selected census tract and highlights it before a popup appears to display the information.
+Choropleth Map Toggle: Allows users to switch between apartment and single-family home data.
+- The choropleth visualization shows price variations across census tracts, making it easy to compare affordability and market trends.
+
+Heatmap and Choropleth of Seattle’s Median Housing Market for an intuitive comparison of housing prices.
+
+## Project Goal
+
+This project provides an interactive and visually engaging platform for exploring Seattle’s housing market. Through thematic maps, users can compare housing costs across neighborhoods, making it a valuable resource for renters, home buyers, city planners, and researchers.
+
+With affordable housing being a growing concern, this application helps users identify potential areas for investment or relocation by visualizing key trends like median rent prices and home sale values. By simplifying market analysis, it empowers users to make informed decisions about Seattle’s housing landscape.
 
 ## Results from this Application
 
@@ -42,10 +48,8 @@ Areas of potential development:
 
 ## Icon
 
+![apple-touch-icon](https://github.com/user-attachments/assets/d30350fd-5a45-4eba-8b22-a0d2ae8829b5)
 
-## Project Goal
-
-With affordable housing being a major topic of interest recently, we want to provide our audience with an application that allows them to view Seattle for potential areas of interest that they would want to invest in. By being able to visualize Seattle easily, it makes the process of selecting potential land to settle much easier for homebuyers and 
 
 ## Application URL
 
@@ -55,14 +59,20 @@ URL: https://fila10.github.io/SeattleHousingMarket/index.html
 
 
 
-## Main Functions
+## Data Sources
 
+Seattle Apartment Market Rent Prices by Census Tract (2023-2024)
+- https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::apartment-market-rent-prices-by-census-tract/about 
+- This dataset provides median rental prices for apartments across Seattle census tracts for the years 2023 and 2024.
 
+Seattle Single-Family Home Sale Prices by Census Tract (2003-2024)
+- https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::single-family-home-sale-prices-by-census-tract/about
+- This dataset contains historical and recent median sale prices for single-family homes, spanning from 2003 to 2024.
 
 ## Applied Libraries
 
-
+Mapbox, GitHub, CSS, JavaScript, GeoJSON
 
 ## Acknowledgements
 
-Throughout our project we did use ChatGPT to help edit and improve the rough drafts of our code. 
+Throughout our project, we used ChatGPT to help edit and improve the rough drafts of our code. 
