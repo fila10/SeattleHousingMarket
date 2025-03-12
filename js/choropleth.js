@@ -43,7 +43,7 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
                 num3,
                 colors[4]
             ],
-            'fill-outline-color': "#6E6E6E"
+            'fill-outline-color': "#444444"
         }
     }, 'poi-label');
 
@@ -148,7 +148,9 @@ function updateTopList(data, listId, priceKey) {
         const censusTract = feature.properties.TRACT || "N/A";
         
         const li = document.createElement("li");
-        li.textContent = `${neighborhood} (${censusTract}): $${new Intl.NumberFormat('en-US').format(feature.properties[priceKey])}`;
+        const price = feature.properties[priceKey];
+        li.textContent = `${neighborhood} (${censusTract}): $${new Intl.NumberFormat('en-US').format(price)}`;
+        if (priceKey === 'PRICE_SQFT' && price % 1 !== 0 && price * 10 % 1 === 0) {li.textContent += '0';};
         list.appendChild(li);
     });
 }
