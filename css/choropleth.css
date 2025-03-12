@@ -149,23 +149,48 @@ body {
     color: white;
     font-weight: bold;
 }
-/* ✅ Make Sidebar Full Height & Fixed Width */
+/* ✅ Make Sidebar Full Height & Scrollable */
 #sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    width: 275px; /* Set the sidebar width */
-    height: 100vh; /* Full height */
+    width: 275px; /* Fixed sidebar width */
+    height: 100vh; /* Full viewport height */
     background: rgba(255, 255, 255, 0.95);
     padding: 20px;
     border-right: 2px solid #ccc;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 0px;
+    gap: 15px;
     z-index: 1000;
+    overflow-y: auto; /* ✅ Enable vertical scrolling */
     align-items: center;
 }
+
+/* ✅ Prevent Sidebar Content from Overflowing */
+#sidebar::-webkit-scrollbar {
+    width: 8px; /* Make scrollbar slim */
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: #bbb; /* Scrollbar color */
+    border-radius: 4px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* ✅ Ensure Sections Fit Properly */
+#selector, #legend, #top-prices, #apartment-link {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Prevents sections from being squished */
+}
+
 
 
 h3 {
