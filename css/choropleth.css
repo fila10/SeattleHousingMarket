@@ -1,15 +1,4 @@
-.box {
-    position: absolute;
-    background-color: #FFFFFF;
-    border-style: solid;
-    border-width: 0;
-    border-radius: 10%;
-    padding: 10px;
-    font-family: Arial, Helvetica, sans-serif
-}
-
 #legend {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     line-height: 18px;
     height: 120px;
     width: 80%; /* Make the legend take up most of the sidebar width */
@@ -17,8 +6,7 @@
     margin: 0 auto; /* ✅ Centers the legend horizontally */
     text-align: left; /* Ensures text inside the legend is centered */
     padding: 10px;
-    background: white;
-    border-radius: 5px;
+    margin-top: 10px;
 }
 
 
@@ -28,11 +16,6 @@
     width: 10px;
     height: 10px;
     margin-right: 5px;
-}
-
-#link {
-    bottom: 5px;
-    left: 5px;
 }
 
 /* ✅ Selector Container */
@@ -224,7 +207,7 @@ p {
 }
 
 /* ✅ Sidebar Sections */
-#selector, #legend, #apartment-link {
+#apartment-link {
     background: white;
     padding: 10px;
     border-radius: 5px;

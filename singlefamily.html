@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Median Single Family Home Prices 2023</title>
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/choropleth.css" rel="stylesheet" />
         <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
 
@@ -32,9 +32,9 @@
 
             <button id="resetView">Reset Zoom - The Greater Seattle</button> <!-- ✅ Reset View Button -->
 
-            <h3>Home Ownership (2023)</h3>
+            <h3>Home Prices (2023)</h3>
 
-            <p>This Choropleth map displays rent statistics for <strong>Single-Family Homes</strong> by Census Tract in the Greater Seattle area</p>
+            <p>This Choropleth map displays rent statistics for <strong>SINGLE FAMILY HOMES</strong> by Census Tract in the Greater Seattle area</p>
 
             <div id="selector">
                 <input type="radio" id="nominative" name="selector" value="nominative" checked />
@@ -47,7 +47,7 @@
             <div id="legend"></div>
         </div>
     
-        <script src="js/script.js"></script>
+        <script src="js/choropleth.js"></script>
         <script>
             map.on('load', function loadingData() {
                 map.addSource('singleFamilyData', {

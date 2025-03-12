@@ -49,17 +49,17 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
 
     let layers = [];
     if (variable === "PRICE_SQFT") {
-        layers  = [
+        title = "per sq ft";
+        layers = [
             "No Data",
             "≤ $" + new Intl.NumberFormat('en-US').format(num1 - 0.001),
             "$" + new Intl.NumberFormat('en-US').format(num1 + 0.009) + " to $" + new Intl.NumberFormat('en-US').format(num2 - 0.001),
             "$" + new Intl.NumberFormat('en-US').format(num2 + 0.009) + " to $" + new Intl.NumberFormat('en-US').format(num3 - 0.001),
             "> $" + new Intl.NumberFormat('en-US').format(num3 - 0.001)
         ];
-        title = "per sq ft";
     } else {
         title = "nominative";
-        layers  = [
+        layers = [
             "No Data",
             "≤ $" + new Intl.NumberFormat('en-US').format(num1 - 1),
             "$" + new Intl.NumberFormat('en-US').format(num1) + " to $" + new Intl.NumberFormat('en-US').format(num2 - 1),
