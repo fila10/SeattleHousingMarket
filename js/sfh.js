@@ -273,3 +273,70 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+let userLocation = null;
+let userMarker = null;
+
+// ✅ Hardcoded Locations for Known Places
+const knownLocations = {
+    "university of washington": [-122.3035, 47.6553], // Exact coordinates for UW Seattle
+};
+
+// ✅ Function to Geocode Address & Restrict Search to Washington
+async function geocodeAddress(address) {
+    const normalizedAddress = address.toLowerCase().trim();
+
+    // ✅ Check if Address is in Known Locations
+    if (knownLocations[normalizedAddress]) {
+        userLocation = knownLocations[normalizedAddress];
+        updateMap(userLocation, "University of Washington, Seattle, WA");
+        return;
+    }
+
+    // ✅ Bounding Box for Washington State (SW & NE corners)
+    const bbox = "-124.848974,45.543541,-116.916073,49.002494";
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?bbox=${bbox}&types=place,address&access_token=${mapboxgl.accessToken}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.features.length === 0) {
+            alert("Address not found in Washington. Please try again.");
+            return;
+        }
+
+        // ✅ Use First (Most Relevant) Result
+        userLocation = data.features[0].geometry.coordinates;
+        updateMap(userLocation, data.features[0].place_name);
+    } catch (error) {
+        console.error("❌ Geocoding error:", error);
+        alert("Error fetching location. Try again later.");
+    }
+}
+
+// ✅ Function to Update Map with a New Marker
+function updateMap(coords, placeName) {
+    // ✅ Remove previous marker if it exists
+    if (userMarker) userMarker.remove();
+
+    // ✅ Place a New Marker at the Found Location
+    userMarker = new mapboxgl.Marker({ color: "red" })
+        .setLngLat(coords)
+        .addTo(map);
+
+    // ✅ Zoom to the Location
+    map.flyTo({ center: coords, zoom: 13 });
+
+    console.log(`📍 Location set at: ${placeName} - ${coords}`);
+}
+
+// ✅ Handle Click Event for "Find Location" Button
+document.getElementById("findLocation").addEventListener("click", () => {
+    const address = document.getElementById("addressInput").value;
+    if (address) {
+        geocodeAddress(address);
+    } else {
+        alert("Please enter an address.");
+    }
+});

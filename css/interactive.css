@@ -193,3 +193,33 @@ p {
 .map-button:active {
     transform: scale(0.98);
 }
+
+#distance-tool {
+    display: flex; /* Arrange items in a row */
+    align-items: center;
+    gap: 5px; /* Adds space between elements */
+    padding: 10px;
+    width: 100%; /* Fit inside sidebar */
+    box-sizing: border-box;
+}
+
+#distance-tool input {
+    flex: 1; /* Make input take up available space */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#distance-tool button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+#distance-tool button:hover {
+    background-color: #0056b3;
+}

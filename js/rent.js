@@ -223,10 +223,37 @@ function resetMapView() {
 
 document.getElementById("resetView").addEventListener("click", resetMapView);
 
-// ✅ Enable Clicking on Census Tracts
+// ✅ Function to Calculate Distance Between Two Points (Haversine Formula) in Miles
+function calculateDistance(coord1, coord2) {
+    const toRadians = (deg) => deg * (Math.PI / 180);
+
+    const [lon1, lat1] = coord1;
+    const [lon2, lat2] = coord2;
+
+    const R = 3958.8; // 🌍 Earth’s radius in miles
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return (R * c).toFixed(2); // 📏 Distance in Miles
+}
+
+
 function enableTractClick() {
     map.on('click', 'tract-layer', (e) => {
         const tractData = e.features[0].properties;
+        const tractCoords = e.lngLat.toArray();
+
+        let distanceText = "N/A";
+        if (userLocation) {
+            const distance = calculateDistance(userLocation, tractCoords);
+            distanceText = `About ${distance} mi`;
+        }
+
         new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(`
@@ -234,10 +261,12 @@ function enableTractClick() {
                 <p><strong>Tract:</strong> ${tractData.TRACT}</p>
                 <p><strong>Price Per SqFt:</strong> $${tractData.PRICE_SQFT || "N/A"}</p>
                 <p><strong>Median Price:</strong> $${tractData.PRICE_NOM || "N/A"}</p>
+                <p><strong>Distance from Point:</strong> ${distanceText}</p>
             `)
             .addTo(map);
     });
 }
+
 
 // ✅ Enable Hover Effect for Individual Census Tracts
 function enableTractHover() {
@@ -272,5 +301,70 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+let userLocation = null;
+let userMarker = null;
 
+// ✅ Hardcoded Locations for Known Places
+const knownLocations = {
+    "university of washington": [-122.3035, 47.6553], // Exact coordinates for UW Seattle
+};
 
+// ✅ Function to Geocode Address & Restrict Search to Washington
+async function geocodeAddress(address) {
+    const normalizedAddress = address.toLowerCase().trim();
+
+    // ✅ Check if Address is in Known Locations
+    if (knownLocations[normalizedAddress]) {
+        userLocation = knownLocations[normalizedAddress];
+        updateMap(userLocation, "University of Washington, Seattle, WA");
+        return;
+    }
+
+    // ✅ Bounding Box for Washington State (SW & NE corners)
+    const bbox = "-124.848974,45.543541,-116.916073,49.002494";
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?bbox=${bbox}&types=place,address&access_token=${mapboxgl.accessToken}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.features.length === 0) {
+            alert("Address not found in Washington. Please try again.");
+            return;
+        }
+
+        // ✅ Use First (Most Relevant) Result
+        userLocation = data.features[0].geometry.coordinates;
+        updateMap(userLocation, data.features[0].place_name);
+    } catch (error) {
+        console.error("❌ Geocoding error:", error);
+        alert("Error fetching location. Try again later.");
+    }
+}
+
+// ✅ Function to Update Map with a New Marker
+function updateMap(coords, placeName) {
+    // ✅ Remove previous marker if it exists
+    if (userMarker) userMarker.remove();
+
+    // ✅ Place a New Marker at the Found Location
+    userMarker = new mapboxgl.Marker({ color: "red" })
+        .setLngLat(coords)
+        .addTo(map);
+
+    // ✅ Zoom to the Location
+    map.flyTo({ center: coords, zoom: 13 });
+
+    console.log(`📍 Location set at: ${placeName} - ${coords}`);
+}
+
+// ✅ Handle Click Event for "Find Location" Button
+document.getElementById("findLocation").addEventListener("click", () => {
+    const address = document.getElementById("addressInput").value;
+    if (address) {
+        geocodeAddress(address);
+    } else {
+        alert("Please enter an address.");
+    }
+});
