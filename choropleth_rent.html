@@ -59,10 +59,12 @@
     
         <script src="js/choropleth.js"></script>
         <script>
+            currentDataset = 'assets/apartment2024.geojson';
+
             map.on('load', function loadingData() {
                 map.addSource('apartmentData', {
                     type: 'geojson',
-                    data: 'assets/apartment2024.geojson'
+                    data: currentDataset
                 });
 
                 addNewLayer('nominative-layer', 'apartmentData', 'PRICE_NOM', 1431, 1797, 2308);
@@ -75,8 +77,6 @@
             nominative.addEventListener("click", function () {
                 swapLayer('square-layer', 'nominative-layer', 'apartmentData', 'PRICE_NOM', 1431, 1797, 2308);
             });
-            
-            currentDataset = 'assets/apartment2024.geojson';
         </script>
 
     <div id="menu-dropdown">

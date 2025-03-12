@@ -134,6 +134,14 @@ async function loadHousingData() {
 function updateTopList(data, listId, priceKey) {
     const list = document.getElementById(listId);
     list.innerHTML = ""; // Clear previous content
+    const headings = document.querySelectorAll('h3');
+    if (priceKey === "PRICE_SQFT") {
+        headings[1].innerHTML = "💰 Top 5 Most Expensive<br>(Per Sq Ft)";
+        headings[2].innerHTML = "🏡 Top 5 Cheapest (Per Sq Ft)";
+    } else {
+        headings[1].innerHTML = "💰 Top 5 Most Expensive<br>(Nominative)";
+        headings[2].innerHTML = "🏡 Top 5 Cheapest (Nominative)";
+    };
 
     data.forEach(feature => {
         const neighborhood = feature.properties.CRA_NAME || "Unknown Neighborhood";
@@ -148,12 +156,4 @@ function updateTopList(data, listId, priceKey) {
 // ✅ Listen for Radio Button Changes to Refresh Rankings
 document.querySelectorAll('input[name="selector"]').forEach(input => {
     input.addEventListener("change", loadHousingData);
-});
-
-// ✅ Detect Which Data to Load (Single-Family or Apartments)
-document.addEventListener("DOMContentLoaded", function () {
-    if (window.location.pathname.includes("apartment")) {
-        currentDataset = 'apartments';
-    }
-    loadHousingData();
 });

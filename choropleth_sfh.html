@@ -58,10 +58,12 @@
     
         <script src="js/choropleth.js"></script>
         <script>
+            currentDataset = 'assets/singlefamily2023.geojson';
+
             map.on('load', function loadingData() {
                 map.addSource('singleFamilyData', {
                     type: 'geojson',
-                    data: 'assets/singlefamily2023.geojson'
+                    data: currentDataset
                 });
 
                 addNewLayer('nominative-layer', 'singleFamilyData', 'PRICE_NOM', 857001, 1214001, 1700001);
@@ -74,8 +76,6 @@
             nominative.addEventListener("click", function () {
                 swapLayer('square-layer', 'nominative-layer', 'singleFamilyData', 'PRICE_NOM', 857001, 1214001, 1700001);
             });
-
-            currentDataset = 'assets/singlefamily2023.geojson';
         </script>
 
 <div id="menu-dropdown">
