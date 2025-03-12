@@ -45,7 +45,7 @@ function addNewLayer(layerName, source, variable, num1, num2, num3) {
             ],
             'fill-outline-color': "#6E6E6E"
         }
-    });
+    }, 'poi-label');
 
     let layers = [];
     if (variable === "PRICE_SQFT") {

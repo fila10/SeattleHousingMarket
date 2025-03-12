@@ -137,7 +137,7 @@ async function loadTracts() {
                 'fill-opacity': 0.6,
                 'fill-outline-color': '#000'
             }
-        });
+        }, 'poi-label');
 
         // ✅ Add Hover Effect Layer (White)
         map.addLayer({
@@ -149,7 +149,7 @@ async function loadTracts() {
                 'fill-opacity': 0.7
             },
             filter: ['==', 'CRA_NAME', '']
-        });
+        }, 'poi-label');
 
         // ✅ Add Selection Effect Layer (Yellow)
         map.addLayer({
@@ -161,7 +161,7 @@ async function loadTracts() {
                 'fill-opacity': 0.6
             },
             filter: ['==', 'CRA_NAME', '']
-        });
+        }, 'poi-label');
 
         enableTractClick();
         enableTractHover();
