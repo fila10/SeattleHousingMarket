@@ -100,17 +100,12 @@ function resetMapView() {
 
 document.getElementById("resetView").addEventListener("click", resetMapView);
 
-const housingDataFiles = {
-    singleFamily: 'assets/singlefamily2023.geojson',
-    apartments: 'assets/apartment2024.geojson'
-};
-
-let currentDataset = 'singleFamily'; // Default dataset
+let currentDataset;
 
 // ✅ Function to Load Housing Data & Update Rankings
 async function loadHousingData() {
     try {
-        const response = await fetch(housingDataFiles[currentDataset]);
+        const response = await fetch(currentDataset);
         const data = await response.json();
         const features = data.features;
 
