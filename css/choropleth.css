@@ -284,3 +284,39 @@ p {
 #resetView:hover {
     background-color: #0056b3;
 }
+
+/* ✅ Style Top 5 Section */
+#top-prices {
+    width: 100%;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 15px;
+}
+
+#top-prices h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* ✅ List Styling */
+#top-prices ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+#top-prices ul li {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+#top-prices ul li:last-child {
+    border-bottom: none;
+}
