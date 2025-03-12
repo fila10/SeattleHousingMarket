@@ -99,3 +99,66 @@ function resetMapView() {
 }
 
 document.getElementById("resetView").addEventListener("click", resetMapView);
+
+const housingDataFiles = {
+    singleFamily: 'assets/singlefamily2023.geojson',
+    apartments: 'assets/apartment2024.geojson'
+};
+
+let currentDataset = 'singleFamily'; // Default dataset
+
+// ✅ Function to Load Housing Data & Update Rankings
+async function loadHousingData() {
+    try {
+        const response = await fetch(housingDataFiles[currentDataset]);
+        const data = await response.json();
+        const features = data.features;
+
+        // Detect if the selected display is per square foot or nominative
+        const priceKey = document.querySelector('input[name="selector"]:checked').value === "square"
+            ? "PRICE_SQFT"
+            : "PRICE_NOM";
+
+        // Extract and sort prices
+        const sortedByPrice = features
+            .filter(f => f.properties[priceKey]) // Ensure valid prices
+            .sort((a, b) => a.properties[priceKey] - b.properties[priceKey]);
+
+        // Get top 5 cheapest & most expensive
+        const cheapest = sortedByPrice.slice(0, 5);
+        const expensive = sortedByPrice.slice(-5).reverse();
+
+        updateTopList(cheapest, "cheapest-list", priceKey);
+        updateTopList(expensive, "expensive-list", priceKey);
+    } catch (error) {
+        console.error("Error loading data:", error);
+    }
+}
+
+// ✅ Function to Update Lists (Now with Neighborhood & Census Tract)
+function updateTopList(data, listId, priceKey) {
+    const list = document.getElementById(listId);
+    list.innerHTML = ""; // Clear previous content
+
+    data.forEach(feature => {
+        const neighborhood = feature.properties.CRA_NAME || "Unknown Neighborhood";
+        const censusTract = feature.properties.TRACT || "N/A";
+        
+        const li = document.createElement("li");
+        li.textContent = `${neighborhood} (${censusTract}): $${new Intl.NumberFormat('en-US').format(feature.properties[priceKey])}`;
+        list.appendChild(li);
+    });
+}
+
+// ✅ Listen for Radio Button Changes to Refresh Rankings
+document.querySelectorAll('input[name="selector"]').forEach(input => {
+    input.addEventListener("change", loadHousingData);
+});
+
+// ✅ Detect Which Data to Load (Single-Family or Apartments)
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.pathname.includes("apartment")) {
+        currentDataset = 'apartments';
+    }
+    loadHousingData();
+});
