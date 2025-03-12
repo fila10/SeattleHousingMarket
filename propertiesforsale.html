@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seattle Housing Market Analysis</title>
+  <title>Median Home Value In Seattle</title>
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
   <style>
@@ -17,24 +17,60 @@
       font-weight: bold;
     }
     #map { width: 100%; height: 100vh; }
-    #toggleButton {
+
+    /* Dashboard Style */
+    #dashboard {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 20px;
-      background: rgba(0, 0, 0, 0.8);
+      top: 320px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
       color: white;
-      border: none;
+      padding: 15px;
+      width: 250px;
       border-radius: 8px;
-      cursor: pointer;
-      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       font-size: 16px;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: background 0.3s ease-in-out;
+      line-height: 1.6;
+      z-index: 1000;
     }
-    #toggleButton:hover { background: rgba(255, 255, 255, 0.2); }
+
+    #dashboard h3 {
+      font-size: 20px;
+      margin-top: 0;
+    }
+
+    .info {
+      margin: 8px 0;
+    }
+
+    /* Menu Dropdown Style (Right) */
+    #menu-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    #menu-dropdown a {
+      display: block;
+      padding: 12px 16px;
+      font-size: 16px;
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    /* Hover Effect for Menu Links */
+    #menu-dropdown a:hover {
+      background: #0077cc;
+      color: white;
+    }
+
+    /* Legend Style */
     #legend {
       padding: 10px;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -44,10 +80,12 @@
       color: white;
       position: absolute;
       bottom: 20px;
-      left: 20px;
+      right: 20px;
       border-radius: 5px;
       font-size: 14px;
+      z-index: 1000;
     }
+
     .legend-key {
       display: inline-block;
       border-radius: 20%;
@@ -55,47 +93,30 @@
       height: 12px;
       margin-right: 5px;
     }
-    #menu-dropdown {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgb(0, 0, 0);
-    border-radius: 4px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    padding: 10px 0;
-}
-
-/* ✅ Dropdown Links */
-#menu-dropdown a {
-    display: block;
-    padding: 12px 16px;
-    font-size: 16px;
-    color: white;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
-
-/* ✅ Hover Effect */
-#menu-dropdown a:hover {
-    background: #0077cc;
-    color: white;
-}
-
   </style>
 </head>
 <body>
-  <div id="title">Seattles Median Housing Market</div>
-  <button id="toggleButton">Switch to Heatmap</button>
+  <div id="title">Median Home Value </div>
   <div id="map"></div>
 
+  <!-- Dashboard for showing neighborhood info -->
+  <div id="dashboard">
+    <h3>Neighborhood Info</h3>
+    <div id="location" class="info"><strong>Location:</strong> N/A</div>
+    <div id="medianValue" class="info"><strong>Median Home Value:</strong> N/A</div>
+  </div>
+
+  <!-- Menu Dropdown positioned on the right -->
   <div id="menu-dropdown">
     <a href="index.html">Home</a>
-    <a href="singlefamily.html">Heat Map</a>
-    <a href="propertiesforsale.html">Filas Map</a>
-</div>
+    <a href="interactive_rent.html" class="menu ">Interactive Map</a>
+    <a href="singlefamily.html">Choropleth Map</a>
+    <a href="propertiesforsale.html">HeatDensity Map</a>
+  </div>
 
-  <div class='map-overlay' id='legend'></div>
+  <!-- Legend -->
+  <div id="legend"></div>
+
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZjEwIiwiYSI6ImNtNnNyMHZwYjBhZWgybnB3NHpxaTByeHUifQ.WzcIIu3lOYN82hJ7-QQGvQ';
     const map = new mapboxgl.Map({
@@ -104,34 +125,19 @@
       center: [-122.335167, 47.608013],
       zoom: 10.3
     });
+
     async function geojsonFetch() {
       let response = await fetch('assets/seattle_median_price_cleaned.geojson');
       let cityData = await response.json();
       map.on('load', function () {
         map.addSource('cityData', { type: 'geojson', data: cityData });
-        map.addLayer({
-          'id': 'choropleth-layer',
-          'type': 'fill',
-          'source': 'cityData',
-          'paint': {
-            'fill-color': [
-              'step',
-              ['coalesce', ['get', 'median_home_value'], 0],
-              'rgb(211, 211, 211)', 540000,
-              '#08306b', 900000,
-              '#6baed6', 1200000,
-              '#fdae61', 1500000,
-              '#f03b20'
-            ],
-            'fill-outline-color': '#BBBBBB',
-            'fill-opacity': 0.85
-          }
-        });
+
+        // Add the heatmap layer only
         map.addLayer({
           'id': 'heatmap-layer',
           'type': 'heatmap',
           'source': 'cityData',
-          'maxzoom': 15,
+          'maxzoom': 20,
           'paint': {
             'heatmap-weight': [
               'interpolate',
@@ -166,61 +172,37 @@
               15, 25
             ],
             'heatmap-opacity': 0.75
-          },
-          'layout': { 'visibility': 'none' }
-        });
-    const labelLayerId = map.getStyle().layers.find(layer => layer.type === 'symbol').id;
-    map.moveLayer('choropleth-layer', labelLayerId); // Move below labels
-    map.moveLayer('heatmap-layer', labelLayerId);    // Move below labels
-
-    // Function to Update the Legend
-       function updateLegend(isHeatmap) {
-          const legend = document.getElementById('legend');
-          legend.innerHTML = `<b>Legend</b><br><br>`;
-
-          if (!isHeatmap) {
-            // Choropleth Legend
-            const layers = ['Undefined','540K - 900K', '900K - 1.2M', '1.2M - 1.5M', 'Above 1.5M'];
-            const colors = ['#D3D3D3','#08306b', '#6baed6', '#fdae61', '#f03b20'];
-
-            layers.forEach((layer, i) => {
-              const item = document.createElement('div');
-              const key = document.createElement('span');
-              key.className = 'legend-key';
-              key.style.backgroundColor = colors[i];
-
-              const value = document.createElement('span');
-              value.innerHTML = `${layer}`;
-              item.appendChild(key);
-              item.appendChild(value);
-              legend.appendChild(item);
-            });
-
-          } else {
-            // Heatmap Legend
-            const gradient = `<div style="height: 20px; width: 100%; background: linear-gradient(to right, rgb(33,102,172), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));"></div>`;
-            legend.innerHTML += gradient;
-            legend.innerHTML += "<br><small>Lower Value → Higher Value</small>";
           }
+        });
+
+        // Set up interaction to display data in the dashboard
+        map.on('mousemove', 'heatmap-layer', function (e) {
+          const features = map.queryRenderedFeatures(e.point, { layers: ['heatmap-layer'] });
+          if (features.length > 0) {
+            const feature = features[0];
+            const location = feature.properties.NEIGHBO || "Unknown";
+            const medianValue = feature.properties.median_home_value ? `$${feature.properties.median_home_value.toLocaleString()}` : "N/A";
+
+            // Update the dashboard with the feature's data
+            document.getElementById('location').textContent = `Location: ${location}`;
+            document.getElementById('medianValue').textContent = `Median Home Value: ${medianValue}`;
+          }
+        });
+
+        // Function to Update the Legend
+        function updateLegend() {
+          const legend = document.getElementById('legend');
+          legend.innerHTML = `<b> Median Price </b><br><br>`;
+          const gradient = `<div style="height: 20px; width: 100%; background: linear-gradient(to right, rgb(33,102,172), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));"></div>`;
+          legend.innerHTML += gradient;
+          legend.innerHTML += "<br><small>500,000 → 2,000000</small>";
         }
 
-        // Toggle Button Functionality
-        const toggleButton = document.getElementById('toggleButton');
-        let isHeatmapVisible = false;
-
-        toggleButton.addEventListener('click', () => {
-          isHeatmapVisible = !isHeatmapVisible;
-          map.setLayoutProperty('choropleth-layer', 'visibility', isHeatmapVisible ? 'none' : 'visible');
-          map.setLayoutProperty('heatmap-layer', 'visibility', isHeatmapVisible ? 'visible' : 'none');
-          toggleButton.textContent = isHeatmapVisible ? "Switch to Choropleth Map" : "Switch to Heatmap";
-          updateLegend(isHeatmapVisible);
-        });
-
-        updateLegend(false);
+        updateLegend();
       });
     }
 
     geojsonFetch();
-    </script>
+  </script>
 </body>
 </html>
