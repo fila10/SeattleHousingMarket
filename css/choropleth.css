@@ -54,7 +54,7 @@
 #selector label {
     flex: 1; /* Make buttons equal width */
     padding: 10px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     text-align: center;
     background: grey;
@@ -319,6 +319,7 @@ p {
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-top: 15px;
+    margin-bottom: 40px;
 }
 
 #top-prices h3 {
