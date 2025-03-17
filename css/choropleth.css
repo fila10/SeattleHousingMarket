@@ -1,3 +1,59 @@
+/* ✅ General Reset */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ✅ Make Sidebar Full Height & Scrollable */
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 275px; /* Fixed sidebar width */
+    height: 100vh; /* Full viewport height */
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-right: 2px solid #ccc;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+    overflow-y: auto; /* ✅ Enable vertical scrolling */
+    align-items: center;
+}
+
+
+h3 {
+    font-family: Arial, sans-serif; /* Set the font */
+    font-size: 20px; /* Adjust the font size */
+    font-weight: bold; /* Make it bold */
+    color: #333; /* Dark gray color */
+    text-align: center; /* Center align the text */
+    margin-bottom: 10px; /* Add some space below */
+    padding: 5px 0; /* Add some padding */
+    border-bottom: 2px solid #0077cc; /* Add an underline effect */
+}
+
+/* ✅ Styling for h4 inside Popups */
+h4 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;  /* Dark gray */
+    text-align: center;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: 2px solid #0077cc; /* Blue underline */
+}
+
+p {
+    text-align: center;
+}
+
+
 #legend {
     line-height: 18px;
     height: 120px;
@@ -81,34 +137,6 @@
     transform: scale(1.02);
 }
 
-
-
-#title {
-    text-align: center;
-    width: 100vw;
-    top: 0;
-    left: 0;
-    border-radius: 0;
-}
-
-#map {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-}
-
-
-/* ✅ General Reset */
-body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    font-family: Arial, sans-serif;
-}
-
 /* ✅ Dropdown Menu Styling */
 #menu-dropdown {
     position: absolute;
@@ -149,24 +177,6 @@ body {
     color: white;
     font-weight: bold;
 }
-/* ✅ Make Sidebar Full Height & Scrollable */
-#sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 275px; /* Fixed sidebar width */
-    height: 100vh; /* Full viewport height */
-    background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-right: 2px solid #ccc;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 1000;
-    overflow-y: auto; /* ✅ Enable vertical scrolling */
-    align-items: center;
-}
 
 /* ✅ Prevent Sidebar Content from Overflowing */
 #sidebar::-webkit-scrollbar {
@@ -190,35 +200,6 @@ body {
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
     flex-shrink: 0; /* Prevents sections from being squished */
 }
-
-
-h3 {
-    font-family: Arial, sans-serif; /* Set the font */
-    font-size: 20px; /* Adjust the font size */
-    font-weight: bold; /* Make it bold */
-    color: #333; /* Dark gray color */
-    text-align: center; /* Center align the text */
-    margin-bottom: 10px; /* Add some space below */
-    padding: 5px 0; /* Add some padding */
-    border-bottom: 2px solid #0077cc; /* Add an underline effect */
-}
-
-/* ✅ Styling for h4 inside Popups */
-h4 {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;  /* Dark gray */
-    text-align: center;
-    margin-bottom: 5px;
-    padding: 5px;
-    border-bottom: 2px solid #0077cc; /* Blue underline */
-}
-
-
-p {
-    text-align: center;
-}
-
 
 /* ✅ Make Sure Map Adjusts */
 #map {
