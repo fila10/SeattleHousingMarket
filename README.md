@@ -19,6 +19,7 @@ The target audience includes:
 Interactive Map: Displays rent statistics for apartments and ownership statistics for single-family homes by Census Tract in the Greater Seattle area.
 - Users can zoom into neighborhoods categorized by North, Central, West, and South Seattle.
 - Clicking on a census tract reveals detailed information, including the neighborhood name, census tract number, price per square foot, and median price.
+- Users can also measure distance between two points, given that one point is set prior to selecting another point afterwards. This function helps with measuring current location to a potential location to where a person or family may want to consider moving.
 
 Choropleth Map Toggle: Allows users to switch between apartment and single-family home data.
 - The choropleth visualization shows price variations across census tracts, making it easy to compare affordability and market trends.
@@ -100,4 +101,4 @@ Mapbox, GitHub, CSS, JavaScript, GeoJSON
 
 ## Acknowledgements
 
-Throughout our project, we used ChatGPT to help edit and improve the rough drafts of our code. 
+Throughout our project, we used ChatGPT to help edit and improve the rough drafts of our code.
