@@ -1,4 +1,3 @@
-// ✅ Use your Mapbox Access Token
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dHN1Z3MiLCJhIjoiY203em45cTM5MG1kZTJscHk1bWJweGp5NiJ9.4iDQS5066jGVPcFcZArztQ';
 
 const SEATTLE_CENTER = [-122.3321, 47.6062];
@@ -11,8 +10,10 @@ const map = new mapboxgl.Map({
     zoom: DEFAULT_ZOOM
 });
 
-let tracts = []; // Store loaded GeoJSON data
 
+let tracts = []; 
+
+// Hardcoded Neighborhood Groups
 const neighborhoodGroups = {
     "North Seattle": [
         "Ballard",
@@ -78,7 +79,7 @@ const neighborhoodGroups = {
     ]
 };
 
-// ✅ Assign a single color per region
+// Color per region
 const regionColors = {
     "North Seattle": "#e6194b",
     "Central Seattle": "#3cb44b",
@@ -86,17 +87,17 @@ const regionColors = {
     "West Seattle": "#f58231"
 };
 
-// ✅ Function to Assign Colors to Neighborhoods by Region
+// Function to Assign Colors to Neighborhoods by Region
 function getNeighborhoodColor(name) {
     for (const [region, neighborhoods] of Object.entries(neighborhoodGroups)) {
         if (neighborhoods.includes(name)) {
-            return regionColors[region]; // ✅ Assign region color
+            return regionColors[region]; // Assign region color
         }
     }
-    return "#cccccc"; // Default gray for ungrouped neighborhoods
+    return "#cccccc"; // Default color
 }
 
-// ✅ Load Census Tract GeoJSON
+// Load Census Tract GeoJSON
 async function loadTracts() {
     try {
         console.log("🔍 Fetching GeoJSON...");
@@ -106,7 +107,7 @@ async function loadTracts() {
         console.log("✅ GeoJSON Loaded:", geojsonData);
         tracts = geojsonData.features;
 
-        // ✅ Add Source for Census Tracts
+        // Add Source for Census Tracts
         if (!map.getSource('tracts')) {
             map.addSource('tracts', {
                 type: 'geojson',
@@ -114,12 +115,12 @@ async function loadTracts() {
             });
         }
 
-        // ✅ Remove Existing Layers if Present
+        // Remove Existing Layers if Present
         if (map.getLayer('tract-layer')) map.removeLayer('tract-layer');
         if (map.getLayer('tract-hover')) map.removeLayer('tract-hover');
         if (map.getLayer('tract-selected')) map.removeLayer('tract-selected');
 
-        // ✅ Apply Colors Based on Region
+        // Apply Colors Based on Region
         const colorExpression = ['case'];
         geojsonData.features.forEach(feature => {
             const name = feature.properties.CRA_NAME || "Unknown";
@@ -127,7 +128,7 @@ async function loadTracts() {
         });
         colorExpression.push('#cccccc'); // Default color
 
-        // ✅ Add Census Tracts Layer
+        // Add Census Tracts Layer
         map.addLayer({
             id: 'tract-layer',
             type: 'fill',
@@ -139,7 +140,7 @@ async function loadTracts() {
             }
         }, 'poi-label');
 
-        // ✅ Add Hover Effect Layer (White)
+        // Add Hover Effect Layer (White)
         map.addLayer({
             id: 'tract-hover',
             type: 'fill',
@@ -151,13 +152,13 @@ async function loadTracts() {
             filter: ['==', 'CRA_NAME', '']
         }, 'poi-label');
 
-        // ✅ Add Selection Effect Layer (Yellow)
+        // Add Selection Effect Layer (Yellow)
         map.addLayer({
             id: 'tract-selected',
             type: 'fill',
             source: 'tracts',
             paint: {
-                'fill-color': '#FFD700',  // Gold/Yellow for selected neighborhoods
+                'fill-color': '#FFD700', 
                 'fill-opacity': 0.6
             },
             filter: ['==', 'CRA_NAME', '']
@@ -165,13 +166,13 @@ async function loadTracts() {
 
         enableTractClick();
         enableTractHover();
-        populateSidebar(geojsonData.features); // ✅ Populate Sidebar with Grouped Neighborhoods
+        populateSidebar(geojsonData.features); 
     } catch (error) {
         console.error('❌ Error loading GeoJSON:', error);
     }
 }
 
-// ✅ Populate Sidebar and Add Click Event
+// Populate Sidebar
 function populateSidebar(features) {
     console.log("🔄 Populating Sidebar with Regions...");
 
@@ -196,10 +197,10 @@ function populateSidebar(features) {
             div.addEventListener('click', () => {
                 console.log(`🔍 Highlighting tracts for: ${name}`);
 
-                // ✅ Apply Yellow Highlight to Selected Neighborhood
+                // Apply Yellow Highlight to Selected Neighborhood
                 map.setFilter('tract-selected', ['==', ['get', 'CRA_NAME'], name]);
 
-                // ✅ Zoom to Neighborhood
+                // Zoom to Neighborhood
                 const neighborhoodTracts = features.filter(f => f.properties.CRA_NAME === name);
                 if (neighborhoodTracts.length > 0) {
                     const coordinates = neighborhoodTracts.flatMap(f => f.geometry.coordinates[0]);
@@ -215,7 +216,7 @@ function populateSidebar(features) {
     console.log("✅ Sidebar Updated with Grouped Neighborhoods!");
 }
 
-// ✅ Reset View Function
+// Reset View Function
 function resetMapView() {
     map.flyTo({ center: SEATTLE_CENTER, zoom: DEFAULT_ZOOM, essential: true });
     map.setFilter('tract-selected', ['==', 'CRA_NAME', '']); // Reset selection
@@ -223,10 +224,37 @@ function resetMapView() {
 
 document.getElementById("resetView").addEventListener("click", resetMapView);
 
-// ✅ Enable Clicking on Census Tracts
+// Function to Calculate Distance Between Two Points (Haversine Formula) in Miles
+function calculateDistance(coord1, coord2) {
+    const toRadians = (deg) => deg * (Math.PI / 180);
+
+    const [lon1, lat1] = coord1;
+    const [lon2, lat2] = coord2;
+
+    const R = 3958.8; // 🌍 Earth’s radius in miles
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return (R * c).toFixed(2); // 📏 Distance in Miles
+}
+
+
 function enableTractClick() {
     map.on('click', 'tract-layer', (e) => {
         const tractData = e.features[0].properties;
+        const tractCoords = e.lngLat.toArray();
+
+        let distanceText = "N/A";
+        if (userLocation) {
+            const distance = calculateDistance(userLocation, tractCoords);
+            distanceText = `About ${distance} mi`;
+        }
+
         new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(`
@@ -234,12 +262,14 @@ function enableTractClick() {
                 <p><strong>Tract:</strong> ${tractData.TRACT}</p>
                 <p><strong>Price Per SqFt:</strong> $${tractData.PRICE_SQFT || "N/A"}</p>
                 <p><strong>Median Price:</strong> $${tractData.PRICE_NOM || "N/A"}</p>
+                <p><strong>Distance from Point:</strong> ${distanceText}</p>
             `)
             .addTo(map);
     });
 }
 
-// ✅ Enable Hover Effect for Individual Census Tracts
+
+// Enable Hover Effect for Individual Census Tracts
 function enableTractHover() {
     map.on('mousemove', 'tract-layer', (e) => {
         if (e.features.length > 0) {
@@ -251,14 +281,14 @@ function enableTractHover() {
     });
 }
 
-// ✅ Reset Selection When Clicking Outside
+// Reset Selection When Clicking Outside
 map.on('click', () => {
     map.setFilter('tract-selected', ['==', 'CRA_NAME', '']);
 });
 
 
 
-// ✅ Initialize
+// Initialize
 map.on('load', () => { loadTracts(); });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -267,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     menuItems.forEach(item => {
         if (item.getAttribute("href") === currentPage) {
-            item.classList.add("active"); // ✅ Add "active" class for shading
+            item.classList.add("active"); // Add "active" class for shading
         }
     });
 });
@@ -276,23 +306,23 @@ document.addEventListener("DOMContentLoaded", function () {
 let userLocation = null;
 let userMarker = null;
 
-// ✅ Hardcoded Locations for Known Places
+// Hardcoded Locations for Known Places
 const knownLocations = {
     "university of washington": [-122.3035, 47.6553], // Exact coordinates for UW Seattle
 };
 
-// ✅ Function to Geocode Address & Restrict Search to Washington
+// Function to Geocode Address & Restrict Search to Washington
 async function geocodeAddress(address) {
     const normalizedAddress = address.toLowerCase().trim();
 
-    // ✅ Check if Address is in Known Locations
+    // Check if Address is in Known Locations
     if (knownLocations[normalizedAddress]) {
         userLocation = knownLocations[normalizedAddress];
         updateMap(userLocation, "University of Washington, Seattle, WA");
         return;
     }
 
-    // ✅ Bounding Box for Washington State (SW & NE corners)
+    // Bounding Box for Washington State (SW & NE corners)
     const bbox = "-124.848974,45.543541,-116.916073,49.002494";
 
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?bbox=${bbox}&types=place,address&access_token=${mapboxgl.accessToken}`;
@@ -315,23 +345,23 @@ async function geocodeAddress(address) {
     }
 }
 
-// ✅ Function to Update Map with a New Marker
+// Function to Update Map with a New Marker
 function updateMap(coords, placeName) {
-    // ✅ Remove previous marker if it exists
+    // Remove previous marker if it exists
     if (userMarker) userMarker.remove();
 
-    // ✅ Place a New Marker at the Found Location
+    // Place a New Marker at the Found Location
     userMarker = new mapboxgl.Marker({ color: "red" })
         .setLngLat(coords)
         .addTo(map);
 
-    // ✅ Zoom to the Location
+    // Zoom to the Location
     map.flyTo({ center: coords, zoom: 13 });
 
     console.log(`📍 Location set at: ${placeName} - ${coords}`);
 }
 
-// ✅ Handle Click Event for "Find Location" Button
+// Handle Click Event for "Find Location" Button
 document.getElementById("findLocation").addEventListener("click", () => {
     const address = document.getElementById("addressInput").value;
     if (address) {

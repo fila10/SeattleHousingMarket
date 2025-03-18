@@ -1,4 +1,4 @@
-/* ✅ General Styling */
+/* General Styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,23 +7,22 @@ body {
     color: #333;
 }
 
-/* ✅ Home Page Project Description */
+/* Home Page Project Description */
 .project-description {
     font-size: 18px;
     line-height: 1.6;
-    color: #333; /* Dark gray for readability */
+    color: #333;
     text-align: center;
-    max-width: 800px; /* Prevents text from becoming too wide */
-    margin: 20px auto; /* Centers the paragraph */
+    max-width: 800px;
+    margin: 20px auto;
     padding: 15px;
-    background: rgba(255, 255, 255, 0.8); /* Light background for contrast */
-    border-left: 5px solid #0077cc; /* Stylish accent line */
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    border-radius: 5px; /* Slight rounding for smooth appearance */
+    background: rgba(255, 255, 255, 0.8);
+    border-left: 5px solid #0077cc;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
 
-
-/* ✅ Header */
+/* Header */
 header {
     background-color: #0077cc;
     color: white;
@@ -31,7 +30,7 @@ header {
     padding: 20px;
 }
 
-/* ✅ Project Description */
+/* Project Description */
 #project-description {
     text-align: center;
     padding: 20px;
@@ -42,7 +41,7 @@ header {
     border-radius: 8px;
 }
 
-/* ✅ Main Image */
+/* Main Image */
 #main-image {
     text-align: center;
     margin-top: 20px;
@@ -55,7 +54,7 @@ header {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* ✅ About the Team */
+/* About the Team */
 #about-team {
     text-align: center;
     padding: 20px;
@@ -80,7 +79,7 @@ header {
     margin: 5px;
 }
 
-/* ✅ Footer */
+/* Footer */
 footer {
     text-align: center;
     background-color: #0077cc;
@@ -89,7 +88,7 @@ footer {
     margin-top: 20px;
 }
 
-/* ✅ h1 - Main Title (Header) */
+/* h1 - Main Title (Header) */
 h1 {
     font-size: 36px;
     font-weight: bold;
@@ -101,7 +100,7 @@ h1 {
     padding: 10px;
 }
 
-/* ✅ h2 - Section Titles */
+/* h2 - Section Titles */
 h2 {
     font-size: 28px;
     font-weight: bold;
@@ -114,7 +113,7 @@ h2 {
     padding-bottom: 5px;
 }
 
-/* ✅ h3 - Team Member Names */
+/* h3 - Team Member Names */
 h3 {
     font-size: 20px;
     font-weight: bold;
@@ -122,7 +121,7 @@ h3 {
     margin-top: 10px;
 }
 
-/* ✅ Map Selection Section */
+/* Map Selection Section */
 #map-navigation {
     text-align: center;
     padding: 20px;
@@ -133,16 +132,16 @@ h3 {
     border-radius: 8px;
 }
 
-/* ✅ Horizontal Button Layout */
+/* Horizontal Button Layout */
 .map-buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap;  /* Ensures responsiveness */
+    flex-wrap: wrap;
     padding-top: 10px;
 }
 
-/* ✅ Individual Map Buttons */
+/* Individual Map Buttons */
 .map-button {
     text-decoration: none;
     background: #0077cc;
@@ -155,5 +154,5 @@ h3 {
 }
 
 .map-button:hover {
-    background: #005fa3; /* Darker blue on hover */
+    background: #005fa3;
 }

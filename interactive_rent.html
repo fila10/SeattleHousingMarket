@@ -5,34 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neighborhoods & Census Tracts</title>
 
-    <!-- Load Mapbox -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
 
-    <!-- Load External Styles -->
     <link rel="stylesheet" href="css/interactive.css">
 
-            <!-- ✅ Standard Favicon -->
+            <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-
-    <!-- ✅ Apple Touch Icon (for iOS) -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-
-    <!-- ✅ ICO Format -->
     <link rel="shortcut icon" href="images/favicon.ico">
 
 
 </head>
 <body>
-
+    <!-- Sidebar for Neighborhood List -->
     <div id="sidebar">
         <div id="mapToggle">
             <a href="interactive_rent.html" class="map-button active">Apartments</a>
             <a href="interactive_sfh.html" class="map-button">Single-Family</a>
         </div>
 
-        <button id="resetView">Reset Zoom - The Greater Seattle</button> <!-- ✅ Reset View Button -->
+        <button id="resetView">Reset Zoom - The Greater Seattle</button> <!-- Reset View Button -->
 
         <h3>Rent Prices (2024)</h3>
 
@@ -47,8 +41,6 @@
         
 
         <h4>Neighborhoods</h4>
-    
-
 
         <div id="tractList"></div> <!-- Neighborhoods will be added here -->
 
